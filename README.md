@@ -20,7 +20,7 @@ extension Bunny: JSONDecodable, JSONEncodable {
     }
 }
 
-let kyleJSON = ["name": "Kyle", "age": 1] as JSON
-let kyle: Bunny? = kyleJSON.decode() // {name "Kyle", age 1}
-kyleJSON == JSON(kyle!) // true
+let spikeJSON = ["name": "Spike", "age": 1] as JSON
+let spike: Bunny? = spikeJSON.decode() // {name "Spike", age 1}
+spikeJSON == JSON(spike!) // true
 ```
