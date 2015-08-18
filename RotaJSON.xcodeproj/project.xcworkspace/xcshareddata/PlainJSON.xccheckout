@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>7ABCF222-5005-4D63-8D6D-18C8FB8FA3E5</string>
+	<key>IDESourceControlProjectName</key>
+	<string>PlainJSON</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>6F266F22DF0F112E472AF5946C46595D5ED69CF0</key>
+		<string>https://github.com/wheely/PlainJSON.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>PlainJSON.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>6F266F22DF0F112E472AF5946C46595D5ED69CF0</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/wheely/PlainJSON.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>6F266F22DF0F112E472AF5946C46595D5ED69CF0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>6F266F22DF0F112E472AF5946C46595D5ED69CF0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PlainJSON</string>
+		</dict>
+	</array>
+</dict>
+</plist>
