@@ -27,71 +27,41 @@ public enum JSON: Equatable {
 
 public func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
     switch (lhs, rhs) {
-    case let (.IntValue(l),    .IntValue(r))    where l == r:
-        return true
-    case let (.IntValue(l),    .FloatValue(r))  where Float(l) == r:
-        return true
-    case let (.IntValue(l),    .DoubleValue(r)) where Double(l) == r:
-        return true
+    case let (.IntValue(l),    .IntValue(r))    where l == r:         return true
+    case let (.IntValue(l),    .FloatValue(r))  where Float(l) == r:  return true
+    case let (.IntValue(l),    .DoubleValue(r)) where Double(l) == r: return true
     
-    case let (.FloatValue(l),  .IntValue(r))    where l == Float(r):
-        return true
-    case let (.FloatValue(l),  .FloatValue(r))  where l == r:
-        return true
-    case let (.FloatValue(l),  .DoubleValue(r)) where Double(l) == r:
-        return true
+    case let (.FloatValue(l),  .IntValue(r))    where l == Float(r):  return true
+    case let (.FloatValue(l),  .FloatValue(r))  where l == r:         return true
+    case let (.FloatValue(l),  .DoubleValue(r)) where Double(l) == r: return true
     
-    case let (.DoubleValue(l), .IntValue(r))    where l == Double(r):
-        return true
-    case let (.DoubleValue(l), .FloatValue(r))  where l == Double(r):
-        return true
-    case let (.DoubleValue(l), .DoubleValue(r)) where l == r:
-        return true
+    case let (.DoubleValue(l), .IntValue(r))    where l == Double(r): return true
+    case let (.DoubleValue(l), .FloatValue(r))  where l == Double(r): return true
+    case let (.DoubleValue(l), .DoubleValue(r)) where l == r:         return true
         
-    default:
-        return false
+    default: return false
     }
 }
 
 
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
-    case let (.Nothing, .Nothing):
-        return true
-    case let (.BoolValue(l), .BoolValue(r)) where l == r:
-        return true
-    case let (.BoolValue(l), .NumberValue(r)):
-        switch r {
-        case let .IntValue(r) where Int(l) == r:
-            return true
-        case let .FloatValue(r) where Float(l) == r:
-            return true
-        case let .DoubleValue(r) where Double(l) == r:
-            return true
-        default:
-            return false
-        }
-    case let (.NumberValue(l), .BoolValue(r)):
-        switch l {
-        case let .IntValue(l) where l == Int(r):
-            return true
-        case let .FloatValue(l) where l == Float(r):
-            return true
-        case let .DoubleValue(l) where l == Double(r):
-            return true
-        default:
-            return false
-        }
-    case let (.NumberValue(l), .NumberValue(r)) where l == r:
-        return true
-    case let (.StringValue(l), .StringValue(r)) where l == r:
-        return true
-    case let (.ArrayValue(l), .ArrayValue(r)) where l == r:
-        return true
-    case let (.DictionaryValue(l), .DictionaryValue(r)) where l == r:
-        return true
-    default:
-        return false
+    case let (.Nothing, .Nothing): return true
+    
+    case let (.BoolValue(l), .BoolValue(r))                 where l == r:         return true
+    case let (.BoolValue(l), .NumberValue(.IntValue(r)))    where Int(l) == r:    return true
+    case let (.BoolValue(l), .NumberValue(.FloatValue(r)))  where Float(l) == r:  return true
+    case let (.BoolValue(l), .NumberValue(.DoubleValue(r))) where Double(l) == r: return true
+    case let (.NumberValue(.IntValue(l)),    .BoolValue(r)) where l == Int(r):    return true
+    case let (.NumberValue(.FloatValue(l)),  .BoolValue(r)) where l == Float(r):  return true
+    case let (.NumberValue(.DoubleValue(l)), .BoolValue(r)) where l == Double(r): return true
+
+    case let (.NumberValue(l),     .NumberValue(r))         where l == r:         return true
+    case let (.StringValue(l),     .StringValue(r))         where l == r:         return true
+    case let (.ArrayValue(l),      .ArrayValue(r))          where l == r:         return true
+    case let (.DictionaryValue(l), .DictionaryValue(r))     where l == r:         return true
+    
+    default: return false
     }
 }
 
@@ -301,10 +271,7 @@ public extension JSON {
     }
     
     public func decode<W: RawRepresentable where W.RawValue: JSONDecodable>() -> W? {
-        if let raw = W.RawValue(JSONValue: self) {
-            return W(rawValue: raw)
-        }
-        return nil
+        return W.RawValue(JSONValue: self).flatMap { W(rawValue: $0) }
     }
     
     public func decode<T: JSONDecodable>() -> [T?]? {
@@ -319,19 +286,11 @@ public extension JSON {
 extension Bool: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .BoolValue(v):
-            self = v
-        case let .NumberValue(v):
-            switch v {
-            case let .IntValue(v):
-                self = Bool(v)
-            case let .FloatValue(v):
-                self = Bool(v)
-            case let .DoubleValue(v):
-                self = Bool(v)
-            }
-        default:
-            return nil
+        case let .BoolValue(v):                 self = v
+        case let .NumberValue(.IntValue(v)):    self = Bool(v)
+        case let .NumberValue(.FloatValue(v)):  self = Bool(v)
+        case let .NumberValue(.DoubleValue(v)): self = Bool(v)
+        default: return nil
         }
     }
     
@@ -369,23 +328,17 @@ private extension String {
 extension Int: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .NumberValue(v):
-            switch v {
-            case let .IntValue(v):
-                self = v
-            case let .FloatValue(v):
-                self = Int(v)
-            case let .DoubleValue(v):
-                self = Int(v)
-            default:
-                return nil
-            }
+        case let .NumberValue(.IntValue(v)):    self = v
+        case let .NumberValue(.FloatValue(v)):  self = Int(v)
+        case let .NumberValue(.DoubleValue(v)): self = Int(v)
+        
         case let .StringValue(v):
             if let v: Int = v.toNumber() {
                 self = v
             } else {
                 return nil
             }
+
         default:
             return nil
         }
@@ -399,23 +352,17 @@ extension Int: JSONDecodable, JSONEncodable {
 extension Float: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .NumberValue(v):
-            switch v {
-            case let .IntValue(v):
-                self = Float(v)
-            case let .FloatValue(v):
-                self = v
-            case let .DoubleValue(v):
-                self = Float(v)
-            default:
-                return nil
-            }
+        case let .NumberValue(.IntValue(v)):    self = Float(v)
+        case let .NumberValue(.FloatValue(v)):  self = v
+        case let .NumberValue(.DoubleValue(v)): self = Float(v)
+        
         case let .StringValue(v):
             if let v: Float = v.toNumber() {
                 self = v
             } else {
                 return nil
             }
+            
         default:
             return nil
         }
@@ -429,23 +376,17 @@ extension Float: JSONDecodable, JSONEncodable {
 extension Double: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .NumberValue(v):
-            switch v {
-            case let .IntValue(v):
-                self = Double(v)
-            case let .FloatValue(v):
-                self = Double(v)
-            case let .DoubleValue(v):
-                self = v
-            default:
-                return nil
-            }
+        case let .NumberValue(.IntValue(v)):    self = Double(v)
+        case let .NumberValue(.FloatValue(v)):  self = Double(v)
+        case let .NumberValue(.DoubleValue(v)): self = v
+        
         case let .StringValue(v):
             if let v: Double = v.toNumber() {
                 self = v
             } else {
                 return nil
             }
+        
         default:
             return nil
         }
