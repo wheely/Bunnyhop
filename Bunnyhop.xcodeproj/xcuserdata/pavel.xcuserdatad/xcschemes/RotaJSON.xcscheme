@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E93AD5361B8221DC008BB49B"
                BuildableName = "RotaJSON.framework"
-               BlueprintName = "RotaJSON"
-               ReferencedContainer = "container:RotaJSON.xcodeproj">
+               BlueprintName = "Bunnyhop"
+               ReferencedContainer = "container:Bunnyhop.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -30,8 +30,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E93AD5411B8221DC008BB49B"
                BuildableName = "RotaJSONTests.xctest"
-               BlueprintName = "RotaJSONTests"
-               ReferencedContainer = "container:RotaJSON.xcodeproj">
+               BlueprintName = "BunnyhopTests"
+               ReferencedContainer = "container:Bunnyhop.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,8 +48,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E93AD5411B8221DC008BB49B"
                BuildableName = "RotaJSONTests.xctest"
-               BlueprintName = "RotaJSONTests"
-               ReferencedContainer = "container:RotaJSON.xcodeproj">
+               BlueprintName = "BunnyhopTests"
+               ReferencedContainer = "container:Bunnyhop.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -58,8 +58,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E93AD5361B8221DC008BB49B"
             BuildableName = "RotaJSON.framework"
-            BlueprintName = "RotaJSON"
-            ReferencedContainer = "container:RotaJSON.xcodeproj">
+            BlueprintName = "Bunnyhop"
+            ReferencedContainer = "container:Bunnyhop.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -77,8 +77,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E93AD5361B8221DC008BB49B"
             BuildableName = "RotaJSON.framework"
-            BlueprintName = "RotaJSON"
-            ReferencedContainer = "container:RotaJSON.xcodeproj">
+            BlueprintName = "Bunnyhop"
+            ReferencedContainer = "container:Bunnyhop.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -95,8 +95,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E93AD5361B8221DC008BB49B"
             BuildableName = "RotaJSON.framework"
-            BlueprintName = "RotaJSON"
-            ReferencedContainer = "container:RotaJSON.xcodeproj">
+            BlueprintName = "Bunnyhop"
+            ReferencedContainer = "container:Bunnyhop.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

@@ -1,6 +1,6 @@
 //
-//  RotaJSON.h
-//  RotaJSON
+//  Bunnyhop.h
+//  Bunnyhop
 //
 //  Created by Pavel Bocharov on 17/08/15.
 //  Copyright (c) 2015 Wheely. All rights reserved.

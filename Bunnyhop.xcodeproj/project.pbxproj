@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E93AD53D1B8221DC008BB49B /* RotaJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = E93AD53C1B8221DC008BB49B /* RotaJSON.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E93AD5431B8221DC008BB49B /* RotaJSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E93AD5371B8221DC008BB49B /* RotaJSON.framework */; };
-		E93AD54A1B8221DC008BB49B /* RotaJSONTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5491B8221DC008BB49B /* RotaJSONTests.swift */; };
-		E93AD5541B8224E4008BB49B /* RotaJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5531B8224E4008BB49B /* RotaJSON.swift */; };
-		E93AD5561B83346E008BB49B /* RotaJSON+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5551B83346E008BB49B /* RotaJSON+Foundation.swift */; };
+		E93AD53D1B8221DC008BB49B /* Bunnyhop.h in Headers */ = {isa = PBXBuildFile; fileRef = E93AD53C1B8221DC008BB49B /* Bunnyhop.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E93AD5431B8221DC008BB49B /* Bunnyhop.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E93AD5371B8221DC008BB49B /* Bunnyhop.framework */; };
+		E93AD54A1B8221DC008BB49B /* BunnyhopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5491B8221DC008BB49B /* BunnyhopTests.swift */; };
+		E93AD5541B8224E4008BB49B /* Bunnyhop.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5531B8224E4008BB49B /* Bunnyhop.swift */; };
+		E93AD5561B83346E008BB49B /* Bunnyhop+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5551B83346E008BB49B /* Bunnyhop+Foundation.swift */; };
 		E93AD5571B833665008BB49B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E93AD53B1B8221DC008BB49B /* Info.plist */; };
 		E93AD5581B833668008BB49B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E93AD5481B8221DC008BB49B /* Info.plist */; };
 /* End PBXBuildFile section */
@@ -27,14 +27,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E93AD5371B8221DC008BB49B /* RotaJSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RotaJSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E93AD5371B8221DC008BB49B /* Bunnyhop.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bunnyhop.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93AD53B1B8221DC008BB49B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E93AD53C1B8221DC008BB49B /* RotaJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RotaJSON.h; sourceTree = "<group>"; };
-		E93AD5421B8221DC008BB49B /* RotaJSONTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RotaJSONTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E93AD53C1B8221DC008BB49B /* Bunnyhop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bunnyhop.h; sourceTree = "<group>"; };
+		E93AD5421B8221DC008BB49B /* BunnyhopTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BunnyhopTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93AD5481B8221DC008BB49B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E93AD5491B8221DC008BB49B /* RotaJSONTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaJSONTests.swift; sourceTree = "<group>"; };
-		E93AD5531B8224E4008BB49B /* RotaJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RotaJSON.swift; sourceTree = "<group>"; };
-		E93AD5551B83346E008BB49B /* RotaJSON+Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RotaJSON+Foundation.swift"; sourceTree = "<group>"; };
+		E93AD5491B8221DC008BB49B /* BunnyhopTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BunnyhopTests.swift; sourceTree = "<group>"; };
+		E93AD5531B8224E4008BB49B /* Bunnyhop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bunnyhop.swift; sourceTree = "<group>"; };
+		E93AD5551B83346E008BB49B /* Bunnyhop+Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bunnyhop+Foundation.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E93AD5431B8221DC008BB49B /* RotaJSON.framework in Frameworks */,
+				E93AD5431B8221DC008BB49B /* Bunnyhop.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,8 +59,8 @@
 		E93AD52D1B8221DC008BB49B = {
 			isa = PBXGroup;
 			children = (
-				E93AD5391B8221DC008BB49B /* RotaJSON */,
-				E93AD5461B8221DC008BB49B /* RotaJSONTests */,
+				E93AD5391B8221DC008BB49B /* Bunnyhop */,
+				E93AD5461B8221DC008BB49B /* BunnyhopTests */,
 				E93AD5381B8221DC008BB49B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,21 +68,21 @@
 		E93AD5381B8221DC008BB49B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E93AD5371B8221DC008BB49B /* RotaJSON.framework */,
-				E93AD5421B8221DC008BB49B /* RotaJSONTests.xctest */,
+				E93AD5371B8221DC008BB49B /* Bunnyhop.framework */,
+				E93AD5421B8221DC008BB49B /* BunnyhopTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E93AD5391B8221DC008BB49B /* RotaJSON */ = {
+		E93AD5391B8221DC008BB49B /* Bunnyhop */ = {
 			isa = PBXGroup;
 			children = (
-				E93AD5531B8224E4008BB49B /* RotaJSON.swift */,
-				E93AD5551B83346E008BB49B /* RotaJSON+Foundation.swift */,
-				E93AD53C1B8221DC008BB49B /* RotaJSON.h */,
+				E93AD5531B8224E4008BB49B /* Bunnyhop.swift */,
+				E93AD5551B83346E008BB49B /* Bunnyhop+Foundation.swift */,
+				E93AD53C1B8221DC008BB49B /* Bunnyhop.h */,
 				E93AD53A1B8221DC008BB49B /* Supporting Files */,
 			);
-			path = RotaJSON;
+			path = Bunnyhop;
 			sourceTree = "<group>";
 		};
 		E93AD53A1B8221DC008BB49B /* Supporting Files */ = {
@@ -93,13 +93,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		E93AD5461B8221DC008BB49B /* RotaJSONTests */ = {
+		E93AD5461B8221DC008BB49B /* BunnyhopTests */ = {
 			isa = PBXGroup;
 			children = (
-				E93AD5491B8221DC008BB49B /* RotaJSONTests.swift */,
+				E93AD5491B8221DC008BB49B /* BunnyhopTests.swift */,
 				E93AD5471B8221DC008BB49B /* Supporting Files */,
 			);
-			path = RotaJSONTests;
+			path = BunnyhopTests;
 			sourceTree = "<group>";
 		};
 		E93AD5471B8221DC008BB49B /* Supporting Files */ = {
@@ -117,16 +117,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E93AD53D1B8221DC008BB49B /* RotaJSON.h in Headers */,
+				E93AD53D1B8221DC008BB49B /* Bunnyhop.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		E93AD5361B8221DC008BB49B /* RotaJSON */ = {
+		E93AD5361B8221DC008BB49B /* Bunnyhop */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E93AD54D1B8221DC008BB49B /* Build configuration list for PBXNativeTarget "RotaJSON" */;
+			buildConfigurationList = E93AD54D1B8221DC008BB49B /* Build configuration list for PBXNativeTarget "Bunnyhop" */;
 			buildPhases = (
 				E93AD5321B8221DC008BB49B /* Sources */,
 				E93AD5331B8221DC008BB49B /* Frameworks */,
@@ -137,14 +137,14 @@
 			);
 			dependencies = (
 			);
-			name = RotaJSON;
+			name = Bunnyhop;
 			productName = PlainJSON;
-			productReference = E93AD5371B8221DC008BB49B /* RotaJSON.framework */;
+			productReference = E93AD5371B8221DC008BB49B /* Bunnyhop.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		E93AD5411B8221DC008BB49B /* RotaJSONTests */ = {
+		E93AD5411B8221DC008BB49B /* BunnyhopTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E93AD5501B8221DC008BB49B /* Build configuration list for PBXNativeTarget "RotaJSONTests" */;
+			buildConfigurationList = E93AD5501B8221DC008BB49B /* Build configuration list for PBXNativeTarget "BunnyhopTests" */;
 			buildPhases = (
 				E93AD53E1B8221DC008BB49B /* Sources */,
 				E93AD53F1B8221DC008BB49B /* Frameworks */,
@@ -155,9 +155,9 @@
 			dependencies = (
 				E93AD5451B8221DC008BB49B /* PBXTargetDependency */,
 			);
-			name = RotaJSONTests;
+			name = BunnyhopTests;
 			productName = PlainJSONTests;
-			productReference = E93AD5421B8221DC008BB49B /* RotaJSONTests.xctest */;
+			productReference = E93AD5421B8221DC008BB49B /* BunnyhopTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -177,7 +177,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E93AD5311B8221DC008BB49B /* Build configuration list for PBXProject "RotaJSON" */;
+			buildConfigurationList = E93AD5311B8221DC008BB49B /* Build configuration list for PBXProject "Bunnyhop" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -189,8 +189,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E93AD5361B8221DC008BB49B /* RotaJSON */,
-				E93AD5411B8221DC008BB49B /* RotaJSONTests */,
+				E93AD5361B8221DC008BB49B /* Bunnyhop */,
+				E93AD5411B8221DC008BB49B /* BunnyhopTests */,
 			);
 		};
 /* End PBXProject section */
@@ -219,8 +219,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E93AD5541B8224E4008BB49B /* RotaJSON.swift in Sources */,
-				E93AD5561B83346E008BB49B /* RotaJSON+Foundation.swift in Sources */,
+				E93AD5541B8224E4008BB49B /* Bunnyhop.swift in Sources */,
+				E93AD5561B83346E008BB49B /* Bunnyhop+Foundation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +228,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E93AD54A1B8221DC008BB49B /* RotaJSONTests.swift in Sources */,
+				E93AD54A1B8221DC008BB49B /* BunnyhopTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,7 +237,7 @@
 /* Begin PBXTargetDependency section */
 		E93AD5451B8221DC008BB49B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E93AD5361B8221DC008BB49B /* RotaJSON */;
+			target = E93AD5361B8221DC008BB49B /* Bunnyhop */;
 			targetProxy = E93AD5441B8221DC008BB49B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -339,10 +339,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = RotaJSON/Info.plist;
+				INFOPLIST_FILE = Bunnyhop/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = RotaJSON;
+				PRODUCT_NAME = Bunnyhop;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -354,10 +354,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = RotaJSON/Info.plist;
+				INFOPLIST_FILE = Bunnyhop/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = RotaJSON;
+				PRODUCT_NAME = Bunnyhop;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -373,9 +373,9 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = RotaJSONTests/Info.plist;
+				INFOPLIST_FILE = BunnyhopTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = RotaJSONTests;
+				PRODUCT_NAME = BunnyhopTests;
 			};
 			name = Debug;
 		};
@@ -386,16 +386,16 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = RotaJSONTests/Info.plist;
+				INFOPLIST_FILE = BunnyhopTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = RotaJSONTests;
+				PRODUCT_NAME = BunnyhopTests;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E93AD5311B8221DC008BB49B /* Build configuration list for PBXProject "RotaJSON" */ = {
+		E93AD5311B8221DC008BB49B /* Build configuration list for PBXProject "Bunnyhop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E93AD54B1B8221DC008BB49B /* Debug */,
@@ -404,7 +404,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E93AD54D1B8221DC008BB49B /* Build configuration list for PBXNativeTarget "RotaJSON" */ = {
+		E93AD54D1B8221DC008BB49B /* Build configuration list for PBXNativeTarget "Bunnyhop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E93AD54E1B8221DC008BB49B /* Debug */,
@@ -413,7 +413,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E93AD5501B8221DC008BB49B /* Build configuration list for PBXNativeTarget "RotaJSONTests" */ = {
+		E93AD5501B8221DC008BB49B /* Build configuration list for PBXNativeTarget "BunnyhopTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E93AD5511B8221DC008BB49B /* Debug */,

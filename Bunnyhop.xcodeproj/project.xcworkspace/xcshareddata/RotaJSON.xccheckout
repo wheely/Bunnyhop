@@ -10,6 +10,8 @@
 	<string>RotaJSON</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>37AB70C0F1AEF36B39B47794255D2625A49F8DCF</key>
+		<string>https://github.com/wheely/CoreWheely.git</string>
 		<key>6F266F22DF0F112E472AF5946C46595D5ED69CF0</key>
 		<string>https://github.com/wheely/PlainJSON.git</string>
 	</dict>
@@ -17,6 +19,8 @@
 	<string>RotaJSON.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
+		<key>37AB70C0F1AEF36B39B47794255D2625A49F8DCF</key>
+		<string>../../../../..</string>
 		<key>6F266F22DF0F112E472AF5946C46595D5ED69CF0</key>
 		<string>../..</string>
 	</dict>
@@ -28,6 +32,14 @@
 	<string>6F266F22DF0F112E472AF5946C46595D5ED69CF0</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>37AB70C0F1AEF36B39B47794255D2625A49F8DCF</string>
+			<key>IDESourceControlWCCName</key>
+			<string>..</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
