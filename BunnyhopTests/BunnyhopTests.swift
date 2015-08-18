@@ -9,28 +9,42 @@
 import UIKit
 import XCTest
 
-class RotaJSONTests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
-    }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
-    }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
+import Bunnyhop
+
+
+class BunnyhopTests: XCTestCase {
+
+    struct Bunny: JSONDecodable, JSONEncodable {
+        var name: String
+        var legCount: Int
+        
+        init(name: String, legCount: Int) {
+            self.name = name
+            self.legCount = legCount
+        }
+        
+        init?(JSONValue: JSON) {
+            if let name: String = JSONValue["name"]?.decode(),
+                legCount: Int = JSONValue["leg_count"]?.decode() {
+                    self.init(name: name, legCount: legCount)
+                    return
+            }
+            return nil
+        }
+        
+        var JSONValue: JSON {
+            get {
+                return JSON(["name": JSON(self.name), "leg_count": JSON(self.legCount)])
+            }
         }
     }
     
+    func testBackAndForth() {
+        let realBunny = Bunny(name: "bugz", legCount: 4)
+        let frozenBunny = realBunny.JSONValue
+        let thawedBunny: Bunny = frozenBunny.decode()!
+        
+        XCTAssertEqual(realBunny.name, thawedBunny.name, "names should be equal")
+        XCTAssertEqual(realBunny.legCount, thawedBunny.legCount, "legCounts should be equal")
+    }
 }
