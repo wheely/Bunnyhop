@@ -1,5 +1,5 @@
 # Bunnyhop
-JSON library for Swift that extensively uses type inference at no extra syntax.
+JSON library for Swift that extensively uses type inference and no extra syntax.
 
 ## Hello World
 
