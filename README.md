@@ -27,7 +27,10 @@ extension Bunny: JSONDecodable, JSONEncodable {
     }
 }
 
+// Encoding
 let spikeJSON: JSON = ["name": "Spike", "age": 1]
 let spike: Bunny? = spikeJSON.decode() // {name "Spike", age 1}
+
+// Decoding
 spikeJSON == JSON(spike!) // true
 ```
