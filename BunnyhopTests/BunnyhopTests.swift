@@ -33,13 +33,13 @@ class BunnyhopTests: XCTestCase {
         }
         
         var JSONValue: JSON {
-            return ["name": JSON(name), "leg_count": JSON(legCount)]
+            return ["name": name, "leg_count": legCount]
         }
     }
     
     func testBackAndForth() {
         let realBunny = Bunny(name: "bugz", legCount: 4)
-        let frozenBunny = realBunny.JSONValue
+        let frozenBunny = JSON(realBunny)
         let thawedBunny: Bunny = frozenBunny.decode()!
         
         XCTAssertEqual(realBunny.name, thawedBunny.name, "names should be equal")

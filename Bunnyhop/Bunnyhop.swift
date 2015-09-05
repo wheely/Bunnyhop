@@ -16,12 +16,11 @@ public enum JSON: Equatable {
         case DoubleValue(Double)
     }
     
-    case Nothing
     case BoolValue(Bool)
     case NumberValue(Number)
     case StringValue(String)
-    case ArrayValue([JSON])
-    case DictionaryValue([String: JSON])
+    case ArrayValue([JSON?])
+    case DictionaryValue([String: JSON?])
 }
 
 
@@ -46,101 +45,57 @@ public func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
 
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
-    case let (.Nothing, .Nothing): return true
-    
-    case let (.BoolValue(l), .BoolValue(r))                 where l == r:         return true
-    case let (.BoolValue(l), .NumberValue(.IntValue(r)))    where Int(l) == r:    return true
-    case let (.BoolValue(l), .NumberValue(.FloatValue(r)))  where Float(l) == r:  return true
-    case let (.BoolValue(l), .NumberValue(.DoubleValue(r))) where Double(l) == r: return true
-    case let (.NumberValue(.IntValue(l)),    .BoolValue(r)) where l == Int(r):    return true
-    case let (.NumberValue(.FloatValue(l)),  .BoolValue(r)) where l == Float(r):  return true
-    case let (.NumberValue(.DoubleValue(l)), .BoolValue(r)) where l == Double(r): return true
+    case let (.BoolValue(l), .BoolValue(r))                 where l == r:          return true
+    case let (.BoolValue(l), .NumberValue(.IntValue(r)))    where Int(l) == r:     return true
+    case let (.BoolValue(l), .NumberValue(.FloatValue(r)))  where Float(l) == r:   return true
+    case let (.BoolValue(l), .NumberValue(.DoubleValue(r))) where Double(l) == r:  return true
+    case let (.NumberValue(.IntValue(l)),    .BoolValue(r)) where l == Int(r):     return true
+    case let (.NumberValue(.FloatValue(l)),  .BoolValue(r)) where l == Float(r):   return true
+    case let (.NumberValue(.DoubleValue(l)), .BoolValue(r)) where l == Double(r):  return true
 
-    case let (.NumberValue(l),     .NumberValue(r))         where l == r:         return true
-    case let (.StringValue(l),     .StringValue(r))         where l == r:         return true
-    case let (.ArrayValue(l),      .ArrayValue(r))          where l == r:         return true
-    case let (.DictionaryValue(l), .DictionaryValue(r))     where l == r:         return true
+    case let (.NumberValue(l),     .NumberValue(r))         where l == r:          return true
+    case let (.StringValue(l),     .StringValue(r))         where l == r:          return true
+    case let (.ArrayValue(l),      .ArrayValue(r))          where equal(l, r, ==): return true
+    case let (.DictionaryValue(l), .DictionaryValue(r))     where equal(l, r) {$0.0.0 == $0.1.0 && $0.0.1 == $0.1.1}: return true
     
     default: return false
     }
 }
 
 
-// MARK: Convenience Initializers
+// MARK: LiteralConvertible Initializers
 
-extension JSON.Number: IntegerLiteralConvertible, FloatLiteralConvertible {
-    public init(_ value: Int) {
-        self = .IntValue(value)
-    }
-    
-    public init(integerLiteral value: Int) {
-        self.init(value)
-    }
-    
-    public init(_ value: Float) {
-        self = .FloatValue(value)
-    }
-    
-    public init(floatLiteral value: Float) {
-        self.init(value)
-    }
-    
-    public init(_ value: Double) {
-        self = .DoubleValue(value)
-    }
-}
-
-extension JSON: NilLiteralConvertible, BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiteralConvertible, UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, StringLiteralConvertible, ArrayLiteralConvertible, DictionaryLiteralConvertible {
-    public init(nilLiteral: ()) {
-        self = .Nothing
-    }
-    
+extension JSON: BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiteralConvertible, UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, StringLiteralConvertible {
     public init(booleanLiteral value: Bool) {
-        self.init(value)
+        self = .BoolValue(value)
     }
     
     public init(integerLiteral value: Int) {
-        self.init(value)
+        self = .NumberValue(Number.IntValue(value))
     }
     
     public init(floatLiteral value: Float) {
-        self.init(value)
+        self = .NumberValue(Number.FloatValue(value))
     }
     
     public init(unicodeScalarLiteral value: String) {
-        self.init(value)
+        self = .StringValue(value)
     }
     
     public init(extendedGraphemeClusterLiteral value: String) {
-        self.init(value)
+        self = .StringValue(value)
     }
     
     public init(stringLiteral value: String) {
-        self.init(value)
-    }
-    
-    public init(_ value: [JSON]) {
-        self = .ArrayValue(value)
-    }
-    
-    public init(arrayLiteral elements: JSON...) {
-        self.init(elements)
-    }
-    
-    public init(_ value: [String: JSON]) {
-        self = .DictionaryValue(value)
-    }
-    
-    public init(dictionaryLiteral elements: (String, JSON)...) {
-        self.init(elements.reduce([String: JSON]()) {(var d, pair) in d[pair.0] = pair.1; return d})
+        self = .StringValue(value)
     }
 }
 
 
-// MARK: Useful getters
+// MARK: Useful Getters
 
 public extension JSON {
-    public var arrayValue: [JSON]? {
+    public var arrayValue: [JSON?]? {
         switch self {
         case let .ArrayValue(v):
             return v
@@ -157,7 +112,7 @@ public extension JSON {
         }
     }
     
-    public var dictionaryValue: [String: JSON]? {
+    public var dictionaryValue: [String: JSON?]? {
         switch self {
         case let .DictionaryValue(v):
             return v
@@ -167,44 +122,104 @@ public extension JSON {
     }
     
     public subscript (key: String) -> JSON? {
-        return dictionaryValue?[key]
+        return dictionaryValue?[key] ?? nil
     }
 }
 
 
-// MARK: Coding & Decoding
+// MARK: Encoding
 
 public protocol JSONEncodable {
     var JSONValue: JSON { get }
 }
 
+extension JSON {
+    public init<T: JSONEncodable>(_ value: T) {
+        self = value.JSONValue
+    }
+
+    public init(_ value: [JSONEncodable?]) {
+        self = .ArrayValue(value.map{$0.map{$0.JSONValue}})
+    }
+    
+    public init(_ value: [String: JSONEncodable?]) {
+        self = .DictionaryValue([String: JSON?](elements: map(value) {($0, $1.map{$0.JSONValue})}))
+    }
+}
+
+extension JSON: ArrayLiteralConvertible, DictionaryLiteralConvertible {
+    public init(arrayLiteral elements: JSONEncodable?...) {
+        self = .ArrayValue(elements.map { value in
+            if let value = value {
+                return Optional<JSON>.Some(value.JSONValue)
+            } else {
+                return nil
+            }
+        })
+    }
+
+    public init(dictionaryLiteral elements: (String, JSONEncodable?)...) {
+        self = .DictionaryValue([String: JSON?](elements: elements.map { (key, value) in
+            if let value = value {
+                return (key, .Some(value.JSONValue))
+            } else {
+                return (key, nil)
+            }
+        }))
+    }
+}
+
+
+// MARK: Decoding
+
 public protocol JSONDecodable {
     init?(JSONValue: JSON)
 }
 
-public extension JSON {
-    public init<T: JSONEncodable>(_ value: T) {
-        self = value.JSONValue
-    }
-    
-    public init<C: CollectionType where C.Generator.Element : JSONEncodable>(_ valueCollection: C) {
-        self.init(map(valueCollection){$0.JSONValue})
-    }
-    
+extension JSON {
     public func decode<T: JSONDecodable>() -> T? {
         return T(JSONValue: self)
     }
     
     public func decode<W: RawRepresentable where W.RawValue: JSONDecodable>() -> W? {
-        return W.RawValue(JSONValue: self).flatMap { W(rawValue: $0) }
+        return W.RawValue(JSONValue: self).flatMap{W(rawValue: $0)}
     }
     
     public func decode<T: JSONDecodable>() -> [T?]? {
-        return self.arrayValue?.map{T(JSONValue: $0)}
+        return self.arrayValue?.map{$0.flatMap{T(JSONValue: $0)}}
     }
     
     public func decode<T: JSONDecodable>() -> [T]? {
-        return self.decode()?.filter{$0 != nil}.map {$0!}
+        return self.decode()?.filter{$0 != nil}.map{$0!}
+    }
+    
+    public func decode<V: JSONDecodable>() -> [String: V?]? {
+        if let dictionaryValue = self.dictionaryValue {
+            return [String: V?](elements: map(dictionaryValue){($0, $1.flatMap{V(JSONValue: $0)})})
+        } else {
+            return nil
+        }
+    }
+    
+    public func decode<V: JSONDecodable>() -> [String: V]? {
+        if let let dictionaryValue = self.dictionaryValue {
+            return [String: V](elements: map(dictionaryValue){($0, $1.flatMap{V(JSONValue: $0)})}.filter{$1 != nil}.map{($0, $1!)})
+        } else {
+            return nil
+        }
+    }
+}
+
+
+// MARK: Encoding & Decoding Conformance For Basic Types
+
+extension JSON: JSONDecodable, JSONEncodable {
+    public init?(JSONValue: JSON) {
+        self = JSONValue
+    }
+    
+    public var JSONValue: JSON {
+        return self
     }
 }
 
@@ -353,18 +368,16 @@ extension JSON.Number: Printable {
 extension JSON: Printable, DebugPrintable {
     public var description: String {
         switch self {
-        case .Nothing: return "nil"
         case let .BoolValue(v): return v.description
         case let .NumberValue(v): return v.description
         case let .StringValue(v): return v
-        case let .ArrayValue(v): return "[" + ", ".join(v.map{$0.description}) + "]"
-        case let .DictionaryValue(v): return "[" + ", ".join(map(v){"\($0.0): \($0.1.description)"}) + "]"
+        case let .ArrayValue(v): return "[" + ", ".join(v.map{$0?.description ?? "nil"}) + "]"
+        case let .DictionaryValue(v): return "[" + ", ".join(map(v){"\($0.0): " + ($0.1?.description ?? "nil")}) + "]"
         }
     }
     
     public var debugDescription: String {
         switch self {
-        case .Nothing: return "{None}"
         case let .BoolValue(v): return v.description
         case let .NumberValue(v): return v.description
         case let .StringValue(v): return v.debugDescription
@@ -375,3 +388,13 @@ extension JSON: Printable, DebugPrintable {
 }
 
 
+// MARK: Helpers
+
+extension Dictionary {
+    private init(elements: [Element]) {
+        self = elements.reduce([Key: Value]()) {(var dict, pair) in
+            dict[pair.0] = pair.1
+            return dict
+        }
+    }
+}

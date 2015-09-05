@@ -20,9 +20,9 @@ extension Bunny: JSONDecodable, JSONEncodable {
     
     var JSONValue: JSON {
         if let name = name {
-            return ["name": JSON(name), "age": JSON(age)]
+            return ["name": name, "age": age]
         } else {
-            return ["age": JSON(age)]
+            return ["age": age]
         }
     }
 }

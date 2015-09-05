@@ -23,51 +23,38 @@ extension CGFloat: JSONDecodable, JSONEncodable {
     }
 }
 
-
 public extension JSON {
     /// Converts from NSJSONSerialization's AnyObject
     public static func fromAnyObject(anyObject: AnyObject?) -> JSON? {
         switch anyObject {
         
-        case let value as NSNull:
-            return .Nothing
+        case _ as NSNull:
+            return nil
         
         case let a as NSNumber:
             switch CFNumberGetType(a as CFNumber) {
             case .SInt8Type, .SInt16Type, .SInt32Type, .SInt64Type,
                  .CharType, .ShortType, .IntType, .LongType, .LongLongType,
                  .CFIndexType, .NSIntegerType:
-                return JSON(a as Int)
+                return (a as Int).JSONValue
             case .Float32Type, .Float64Type, .FloatType, .CGFloatType:
-                return JSON(a as Float)
+                return (a as Float).JSONValue
             case .DoubleType:
-                return JSON(a as Double)
+                return (a as Double).JSONValue
             }
         
         case let value as String:
-            return JSON(value)
+            return .StringValue(value)
         
         case let value as [AnyObject]:
-            var a = [JSON]()
-            for v in value {
-                if let v = JSON.fromAnyObject(v) {
-                    a.append(v)
-                } else {
-                    return nil // TODO: add strict and not strict version
-                }
-            }
-            return JSON(a)
+            return .ArrayValue(value.map{JSON.fromAnyObject($0)})
             
         case let value as [String: AnyObject]:
-            var d: [String: JSON] = [:]
+            var d: [String: JSON?] = [:]
             for (k, v) in value {
-                if let v = JSON.fromAnyObject(v) {
-                    d[k] = v
-                } else {
-                    return nil // TODO: add strict and not strict version
-                }
+                d[k] = JSON.fromAnyObject(v)
             }
-            return JSON(d)
+            return .DictionaryValue(d)
             
         default:
             break
@@ -78,20 +65,19 @@ public extension JSON {
     
     public func toAnyObject() -> AnyObject {
         switch self {
-        case .Nothing:                          return NSNull()
         case let .BoolValue(v):                 return v as NSNumber
         case let .NumberValue(.IntValue(v)):    return v as NSNumber
         case let .NumberValue(.FloatValue(v)):  return v as NSNumber
         case let .NumberValue(.DoubleValue(v)): return v as NSNumber
         case let .StringValue(v):               return v as NSString
-        case let .ArrayValue(v):                return v.map{$0.toAnyObject()} as NSArray
+        case let .ArrayValue(v):                return v.map{$0.map{$0.toAnyObject()} ?? NSNull()} as NSArray
         
         case let .DictionaryValue(v):
             var d: [String: AnyObject] = [:]
             for (k, v) in v {
-                d[k] = v.toAnyObject()
+                d[k] = v.map{$0.toAnyObject()} ?? NSNull()
             }
-            return d
+            return d as NSDictionary
         }
     }
 }
