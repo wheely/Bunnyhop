@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Bunnyhop"
-  s.version      = "0.1.0"
+  s.version      = "v0.1"
   s.summary      = "JSON library for Swift that extensively uses type inference and no extra syntax"
   s.homepage     = "https://github.com/wheely/Bunnyhop"
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
