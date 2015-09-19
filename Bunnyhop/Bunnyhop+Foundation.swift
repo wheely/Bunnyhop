@@ -10,12 +10,9 @@ import Foundation
 
 
 extension CGFloat: JSONDecodable, JSONEncodable {
-    public init?(JSONValue: JSON) {
-        if let value: Double = JSONValue.decode() {
-            self.init(value)
-        } else {
-            return nil
-        }
+    public init(JSONValue: JSON) throws {
+        let value: Double = try JSONValue.decode()
+        self.init(value)
     }
     
     public var JSONValue: JSON {

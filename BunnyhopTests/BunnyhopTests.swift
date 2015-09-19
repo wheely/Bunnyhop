@@ -23,13 +23,9 @@ class BunnyhopTests: XCTestCase {
             self.legCount = legCount
         }
         
-        init?(JSONValue: JSON) {
-            if let name: String = JSONValue["name"]?.decode(),
-                   legCount: Int = JSONValue["leg_count"]?.decode() {
-                self.init(name: name, legCount: legCount)
-            } else {
-                return nil
-            }
+        init(JSONValue: JSON) throws {
+            self.init(name:     try JSONValue["name"].decode(),
+                      legCount: try JSONValue["leg_count"].decode())
         }
         
         var JSONValue: JSON {
@@ -40,7 +36,7 @@ class BunnyhopTests: XCTestCase {
     func testBackAndForth() {
         let realBunny = Bunny(name: "bugz", legCount: 4)
         let frozenBunny = JSON(realBunny)
-        let thawedBunny: Bunny = frozenBunny.decode()!
+        let thawedBunny: Bunny = try! frozenBunny.decode()
         
         XCTAssertEqual(realBunny.name, thawedBunny.name, "names should be equal")
         XCTAssertEqual(realBunny.legCount, thawedBunny.legCount, "legCounts should be equal")
