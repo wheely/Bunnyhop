@@ -63,7 +63,7 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
 }
 
 
-// MARK: LiteralConvertible Initializers
+// MARK: - LiteralConvertible Initializers
 
 extension JSON: BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiteralConvertible,
     UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, StringLiteralConvertible {
@@ -93,7 +93,7 @@ extension JSON: BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiter
 }
 
 
-// MARK: Encoding
+// MARK: - Encoding
 
 public protocol JSONEncodable {
     var JSONValue: JSON { get }
@@ -132,7 +132,7 @@ extension JSON: ArrayLiteralConvertible, DictionaryLiteralConvertible {
 }
 
 
-// MARK: Decoding
+// MARK: - Decoding
 
 public protocol JSONDecodable {
     init(JSONValue: JSON) throws
@@ -140,7 +140,6 @@ public protocol JSONDecodable {
 
 public protocol JSONDecoder {
     func decode() throws -> JSON?
-    func decode() throws -> JSON
     func wrapError(error: JSON.Error) -> JSON.Error
 }
 
@@ -186,19 +185,19 @@ extension JSON.Error: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 extension JSONDecoder {
+    public func decode() throws -> JSON {
+        guard let JSONValue: JSON = try decode() else {
+            throw wrapError(.MissingValue)
+        }
+        return JSONValue
+    }
+
+    // MARK: Decoding Non-Optionals
+    
     public func decode<T: JSONDecodable>() throws -> T {
         let JSONValue: JSON = try decode()
         do {
             return try T(JSONValue: JSONValue)
-        } catch let error as JSON.Error {
-            throw wrapError(error)
-        }
-    }
-    
-    public func decode<T: JSONDecodable>() throws -> T? {
-        let JSONValue: JSON? = try decode()
-        do {
-            return try JSONValue.map { try $0.decode() }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
@@ -211,15 +210,6 @@ extension JSONDecoder {
         }
         do {
             return try arrayValue.map { try $0.map { try $0.decode() } }
-        } catch let error as JSON.Error {
-            throw wrapError(error)
-        }
-    }
-    
-    public func decode<T: JSONDecodable>() throws -> [T?]? {
-        let JSONValue: JSON? = try decode()
-        do {
-            return try JSONValue.map { try $0.decode() }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
@@ -242,15 +232,6 @@ extension JSONDecoder {
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [T]? {
-        let JSONValue: JSON? = try decode()
-        do {
-            return try JSONValue.map { try $0.decode() }
-        } catch let error as JSON.Error {
-            throw wrapError(error)
-        }
-    }
-    
     public func decode<T: JSONDecodable>() throws -> [String: T?] {
         let JSONValue: JSON = try decode()
         guard case let .DictionaryValue(dictionaryValue) = JSONValue else {
@@ -258,15 +239,6 @@ extension JSONDecoder {
         }
         do {
             return Dictionary(elements: try dictionaryValue.map { ($0, try $1.map { try $0.decode() }) })
-        } catch let error as JSON.Error {
-            throw wrapError(error)
-        }
-    }
-    
-    public func decode<T: JSONDecodable>() throws -> [String: T?]? {
-        let JSONValue: JSON? = try decode()
-        do {
-            return try JSONValue.map { try $0.decode() }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
@@ -282,7 +254,10 @@ extension JSONDecoder {
         })
     }
     
-    public func decode<T: JSONDecodable>() throws -> [String: T]? {
+    
+    // MARK: Decoding Optionals
+    
+    public func decode<T: JSONDecodable>() throws -> T? {
         let JSONValue: JSON? = try decode()
         do {
             return try JSONValue.map { try $0.decode() }
@@ -290,19 +265,41 @@ extension JSONDecoder {
             throw wrapError(error)
         }
     }
-}
-
-extension JSON: JSONDecoder {
-    public func decode() -> JSON? {
-        return self
+    
+    public func decode<T: JSONDecodable>() throws -> [T?]? {
+        let JSONValue: JSON? = try decode()
+        do {
+            return try JSONValue.map { try $0.decode() }
+        } catch let error as JSON.Error {
+            throw wrapError(error)
+        }
     }
     
-    public func decode() -> JSON {
-        return self
+    public func decode<T: JSONDecodable>() throws -> [T]? {
+        let JSONValue: JSON? = try decode()
+        do {
+            return try JSONValue.map { try $0.decode() }
+        } catch let error as JSON.Error {
+            throw wrapError(error)
+        }
     }
     
-    public func wrapError(error: JSON.Error) -> JSON.Error {
-        return error
+    public func decode<T: JSONDecodable>() throws -> [String: T?]? {
+        let JSONValue: JSON? = try decode()
+        do {
+            return try JSONValue.map { try $0.decode() }
+        } catch let error as JSON.Error {
+            throw wrapError(error)
+        }
+    }
+    
+    public func decode<T: JSONDecodable>() throws -> [String: T]? {
+        let JSONValue: JSON? = try decode()
+        do {
+            return try JSONValue.map { try $0.decode() }
+        } catch let error as JSON.Error {
+            throw wrapError(error)
+        }
     }
 }
 
@@ -319,16 +316,22 @@ extension JSONDecoder {
     }
 }
 
+
+// MARK: - Conforming to JSONDecoder
+
+extension JSON: JSONDecoder {
+    public func decode() -> JSON? {
+        return self
+    }
+    
+    public func wrapError(error: JSON.Error) -> JSON.Error {
+        return error
+    }
+}
+
 extension JSON.KeyedValue: JSONDecoder {
     public func decode() throws -> JSON? {
         return try container.decode()[key] ?? nil
-    }
-    
-    public func decode() throws -> JSON {
-        guard let JSONValue: JSON = try decode() else {
-            throw wrapError(.MissingValue)
-        }
-        return JSONValue
     }
     
     public func wrapError(error: JSON.Error) -> JSON.Error {
@@ -337,7 +340,7 @@ extension JSON.KeyedValue: JSONDecoder {
 }
 
 
-// MARK: Encoding & Decoding Conformance For Basic Types
+// MARK: - Encoding & Decoding Conformance For Basic Types
 
 extension JSON: JSONDecodable, JSONEncodable {
     public init(JSONValue: JSON) {
@@ -480,7 +483,7 @@ extension String: JSONDecodable, JSONEncodable {
 }
 
 
-// MARK: Descriptions
+// MARK: - CustomStringConvertible
 
 extension JSON.Number: CustomStringConvertible {
     public var description: String {
@@ -515,7 +518,7 @@ extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
 }
 
 
-// MARK: Helpers
+// MARK: - Helpers
 
 extension Dictionary {
     private init(elements: [Element]) {
