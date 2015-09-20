@@ -112,11 +112,19 @@ extension JSON {
         self = .ArrayValue(value.map { $0.map{ $0.JSONValue } })
     }
     
+    public init(_ value: [JSONEncodable?]) {
+        self = .ArrayValue(value.map { $0.map{ $0.JSONValue } })
+    }
+    
     public init<T: JSONEncodable>(_ value: [String: T]) {
         self = .DictionaryValue(Dictionary(elements: value.map { ($0, .Some($1.JSONValue)) }))
     }
     
     public init<T: JSONEncodable>(_ value: [String: T?]) {
+        self = .DictionaryValue(Dictionary(elements: value.map { ($0, $1.map { $0.JSONValue }) }))
+    }
+    
+    public init(_ value: [String: JSONEncodable?]) {
         self = .DictionaryValue(Dictionary(elements: value.map { ($0, $1.map { $0.JSONValue }) }))
     }
 }
