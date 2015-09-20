@@ -156,7 +156,7 @@ extension JSON.Error: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
         case let .TypeMismatch(type, JSONValue):
-            return "Can't decode \(JSONValue) into \(type)"
+            return "Can't initialize \(type) with \(JSONValue.debugDescription)"
         case .MissingValue:
             return "Missing value"
         case .ContansNilElement:
@@ -191,6 +191,7 @@ extension JSONDecoder {
         }
         return JSONValue
     }
+    
 
     // MARK: Decoding Non-Optionals
     
@@ -203,55 +204,121 @@ extension JSONDecoder {
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [T?] {
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [T?] {
         let JSONValue: JSON = try decode()
         guard case let .ArrayValue(arrayValue) = JSONValue else {
             throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [T?].self, from: JSONValue))
         }
         do {
-            return try arrayValue.map { try $0.map { try $0.decode() } }
+            if let recoverer = recoverer {
+                return try arrayValue.map {
+                    if let JSONValue = $0 {
+                        do {
+                            return try JSONValue.decode()
+                        } catch let error as JSON.Error {
+                            return try recoverer(error)
+                        }
+                    } else {
+                        return nil
+                    }
+                }
+            } else {
+                return try arrayValue.map { try $0.map { try $0.decode() } }
+            }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [T] {
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [T] {
         let JSONValue: JSON = try decode()
         guard case let .ArrayValue(arrayValue) = JSONValue else {
             throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [T].self, from: JSONValue))
         }
         do {
-            return try arrayValue.map { (JSONValue: JSON?) -> T in
-                guard let JSONValue = JSONValue else {
-                    throw JSON.Error.ContansNilElement
+            if let recoverer = recoverer {
+                return try arrayValue.reduce([]) { (var elements, JSONValue) in
+                    if let JSONValue = JSONValue {
+                        do {
+                            elements.append(try JSONValue.decode())
+                        } catch let error as JSON.Error {
+                            if let recoveredValue = try recoverer(error) {
+                                elements.append(recoveredValue)
+                            }
+                        }
+                    } else if let recoveredValue = try recoverer(.ContansNilElement) {
+                        elements.append(recoveredValue)
+                    }
+                    return elements
                 }
-                return try JSONValue.decode()
+            } else {
+                return try arrayValue.map {
+                    guard let JSONValue = $0 else {
+                        throw JSON.Error.ContansNilElement
+                    }
+                    return try JSONValue.decode()
+                }
             }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [String: T?] {
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [String: T?] {
         let JSONValue: JSON = try decode()
         guard case let .DictionaryValue(dictionaryValue) = JSONValue else {
             throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [String: T?].self, from: JSONValue))
         }
         do {
-            return Dictionary(elements: try dictionaryValue.map { ($0, try $1.map { try $0.decode() }) })
+            if let recoverer = recoverer {
+                return Dictionary(elements: try dictionaryValue.map { ($0, try $1.flatMap {
+                    do {
+                        return try $0.decode()
+                    } catch let error as JSON.Error {
+                        return try recoverer(error)
+                    }
+                }) })
+            } else {
+                return Dictionary(elements: try dictionaryValue.map { ($0, try $1.map { try $0.decode() }) })
+            }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [String: T] {
-        let value: [String: T?] = try decode()
-        return Dictionary(elements: try value.map { (key: String, value: T?) throws -> (String, T) in
-            guard let value = value else {
-                throw wrapError(JSON.Error.ContansNilElement)
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [String: T] {
+        let JSONValue: JSON = try decode()
+        guard case let .DictionaryValue(dictionaryValue) = JSONValue else {
+            throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [String: T].self, from: JSONValue))
+        }
+        do {
+            if let recoverer = recoverer {
+                return Dictionary(elements: try dictionaryValue.reduce([]) { (var elements, pair) in
+                    let (key, JSONValue) = pair
+                    if let JSONValue = JSONValue{
+                        do {
+                            elements.append((key, try JSONValue.decode()))
+                        } catch let error as JSON.Error {
+                            if let recoveredValue = try recoverer(error) {
+                                elements.append((key, recoveredValue))
+                            }
+                        }
+                    } else if let recoveredValue = try recoverer(.ContansNilElement) {
+                        elements.append((key, recoveredValue))
+                    }
+                    return elements
+                })
+            } else {
+                return Dictionary(elements: try dictionaryValue.map { key, JSONValue in
+                    guard let JSONValue = JSONValue else {
+                        throw JSON.Error.ContansNilElement
+                    }
+                    return (key, try JSONValue.decode())
+                })
             }
-            return (key, value)
-        })
+        } catch let error as JSON.Error {
+            throw wrapError(error)
+        }
     }
     
     
@@ -266,37 +333,37 @@ extension JSONDecoder {
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [T?]? {
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [T?]? {
         let JSONValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode() }
+            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [T]? {
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [T]? {
         let JSONValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode() }
+            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [String: T?]? {
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [String: T?]? {
         let JSONValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode() }
+            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>() throws -> [String: T]? {
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: (JSON.Error throws -> T?)? = nil) throws -> [String: T]? {
         let JSONValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode() }
+            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
         } catch let error as JSON.Error {
             throw wrapError(error)
         }
