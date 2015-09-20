@@ -22,7 +22,7 @@ extension CGFloat: JSONDecodable, JSONEncodable {
 
 public extension JSON {
     /// Converts from NSJSONSerialization's AnyObject
-    public static func fromAnyObject(anyObject: AnyObject?) -> JSON? {
+    public static func fromAnyObject(anyObject: AnyObject) -> JSON? {
         switch anyObject {
         
         case _ as NSNull:
@@ -76,5 +76,21 @@ public extension JSON {
             }
             return d as NSDictionary
         }
+    }
+    
+    public init?(data: NSData, allowFragments: Bool = false) throws {
+        let JSONAsAnyObject: AnyObject =
+            try NSJSONSerialization.JSONObjectWithData(data, options: allowFragments ? .AllowFragments : NSJSONReadingOptions())
+        if let JSONValue = JSON.fromAnyObject(JSONAsAnyObject) {
+            self = JSONValue
+        } else {
+            return nil
+        }
+    }
+    
+    public func encode(prettyPrinted: Bool = false) -> NSData {
+        // An instance of JSON type will never throw an error
+        return try! NSJSONSerialization.dataWithJSONObject(toAnyObject(),
+                                                           options: prettyPrinted ? .PrettyPrinted : NSJSONWritingOptions())
     }
 }
