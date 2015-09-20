@@ -41,7 +41,7 @@ try JSON(data: spikeJSON.encode())
 // Error Handling
 let badSpikeJSON: JSON = ["name": "Spike", "age": nil]
 do {
-    try badSpikeJSON.decode() as Bunny
+    try badSpikeJSON.decode() as Bunny // Throws an error
 } catch let e as JSON.Error {
     print(e) // Prints 'age: Missing value'
 }
@@ -85,7 +85,7 @@ let recoveredBunnies: [Bunny] =
         case let (.Some(JSONValue), .KeyError("age", .MissingValue)):
             return Bunny(name: try JSONValue["name"].decode(), age: 0) // Rescue Lily!
         default:
-            return nil // Skip bad bunnies
+            return nil // Skip other bad bunnies
         }
     }
 print(recoveredBunnies) // [Bunny(name: Optional("Spike"), age: 1),
