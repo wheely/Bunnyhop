@@ -4,6 +4,8 @@ JSON library for Swift that extensively uses type inference and no extra syntax.
 ## Hello World
 
 ```swift
+import Bunnyhop
+
 struct Bunny {
     let name: String?
     let age: Int
@@ -14,31 +16,31 @@ extension Bunny: JSONDecodable, JSONEncodable {
         self.init(name: try JSONValue["name"].decode(),
                   age:  try JSONValue["age"].decode())
     }
-    
+
     var JSONValue: JSON {
         return ["name": name, "age": age]
     }
 }
 
 
-// Encoding
+//: Encoding
 let spikeJSON: JSON = ["name": "Spike", "age": 1]
 let spike: Bunny = try! spikeJSON.decode() // {name "Spike", age 1}
 
 
-// Decoding
+//: Decoding
 spikeJSON == JSON(spike) // true
 
 
-// Serialization
+//: Serialization
 String(data: spikeJSON.encode(), encoding: NSUTF8StringEncoding)
 
 
-// Deserialization
+//: Deserialization
 try JSON(data: spikeJSON.encode())
 
 
-// Error Handling
+//: Error Handling
 let badSpikeJSON: JSON = ["name": "Spike", "age": nil]
 do {
     try badSpikeJSON.decode() as Bunny // Throws an error
@@ -46,17 +48,18 @@ do {
     print(e) // Prints 'age: Missing value'
 }
 
-
-// More Error Handling
-let veryBadSpikeJSON: JSON = ["name": "Spike", "age": JSON([5])]
+let strangeSpikeJSON: JSON = ["name": JSON(["Spike"]), "age": 1]
 do {
-    try veryBadSpikeJSON.decode() as Bunny // Throws an error
+    try strangeSpikeJSON.decode() as Bunny // Throws an error
 } catch let e as JSON.Error {
-    print(e) // Prints 'age: Can't initialize Int with [Optional(5)]'
+    print(e) // Prints 'name: Can't initialize String with [Optional("Spike")]'
 }
+// To avoid this behavior and initialize optional name with nil use
+// `try? JSONValue["name"].decode()` instead of `try JSONValue["name"].decode()`
+// in Bunny.init(JSONValue: JSON)
 
 
-// Element Recovery
+//: Collection Recovery
 let goodAndBadBunniesJSON: JSON = [
     JSON(["name": "Spike", "age": 1]),  // Good
     nil,                                // Bad
@@ -64,7 +67,7 @@ let goodAndBadBunniesJSON: JSON = [
     JSON(["name": "Coco", "age": 2]),   // Good
     ]
 do {
-    let bunnies: [Bunny] = try goodAndBadBunniesJSON.decode() // Throws an error
+    try goodAndBadBunniesJSON.decode() as [Bunny] // Throws an error
 } catch let e as JSON.Error {
     print(e) // Prints first error 'Contains nil element'
 }
@@ -83,7 +86,7 @@ let recoveredBunnies: [Bunny] =
     try goodAndBadBunniesJSON.decode { (JSONValue: JSON?, error: JSON.Error) -> Bunny? in
         switch (JSONValue, error) {
         case let (.Some(JSONValue), .KeyError("age", .MissingValue)):
-            return Bunny(name: try JSONValue["name"].decode(), age: 0) // Rescue Lily!
+            return Bunny(name: try JSONValue["name"].decode(), age: 0)
         default:
             return nil // Skip other bad bunnies
         }
