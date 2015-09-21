@@ -55,8 +55,8 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
 
     case let (.NumberValue(l),     .NumberValue(r))         where l == r:          return true
     case let (.StringValue(l),     .StringValue(r))         where l == r:          return true
-    case let (.ArrayValue(l),      .ArrayValue(r))          where equal(l, r, ==): return true
-    case let (.DictionaryValue(l), .DictionaryValue(r))     where equal(l, r) {$0.0.0 == $0.1.0 && $0.0.1 == $0.1.1}: return true
+    case let (.ArrayValue(l),      .ArrayValue(r))          where l.elementsEqual(r, isEquivalent: ==): return true
+    case let (.DictionaryValue(l), .DictionaryValue(r))     where l.elementsEqual(r) {$0.0.0 == $0.1.0 && $0.0.1 == $0.1.1}: return true
     
     default: return false
     }
@@ -143,7 +143,7 @@ extension JSON {
     }
     
     public init(_ value: [String: JSONEncodable?]) {
-        self = .DictionaryValue([String: JSON?](elements: map(value) {($0, $1.map{$0.JSONValue})}))
+        self = .DictionaryValue([String: JSON?](elements: value.map {($0, $1.map{$0.JSONValue})}))
     }
 }
 
@@ -195,15 +195,15 @@ extension JSON {
     
     public func decode<V: JSONDecodable>() -> [String: V?]? {
         if let dictionaryValue = self.dictionaryValue {
-            return [String: V?](elements: map(dictionaryValue){($0, $1.flatMap{V(JSONValue: $0)})})
+            return [String: V?](elements: dictionaryValue.map{($0, $1.flatMap{V(JSONValue: $0)})})
         } else {
             return nil
         }
     }
     
     public func decode<V: JSONDecodable>() -> [String: V]? {
-        if let let dictionaryValue = self.dictionaryValue {
-            return [String: V](elements: map(dictionaryValue){($0, $1.flatMap{V(JSONValue: $0)})}.filter{$1 != nil}.map{($0, $1!)})
+        if let dictionaryValue = self.dictionaryValue {
+            return [String: V](elements: dictionaryValue.map{($0, $1.flatMap{V(JSONValue: $0)})}.filter{$1 != nil}.map{($0, $1!)})
         } else {
             return nil
         }
@@ -355,7 +355,7 @@ extension String: JSONDecodable, JSONEncodable {
 
 // MARK: Descriptions
 
-extension JSON.Number: Printable {
+extension JSON.Number: CustomStringConvertible {
     public var description: String {
         switch self {
         case let .IntValue(v): return v.description
@@ -365,14 +365,14 @@ extension JSON.Number: Printable {
     }
 }
 
-extension JSON: Printable, DebugPrintable {
+extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
         case let .BoolValue(v): return v.description
         case let .NumberValue(v): return v.description
         case let .StringValue(v): return v
-        case let .ArrayValue(v): return "[" + ", ".join(v.map{$0?.description ?? "nil"}) + "]"
-        case let .DictionaryValue(v): return "[" + ", ".join(map(v){"\($0.0): " + ($0.1?.description ?? "nil")}) + "]"
+        case let .ArrayValue(v): return "[" + v.map{$0?.description ?? "nil"}.joinWithSeparator(", ") + "]"
+        case let .DictionaryValue(v): return "[" + v.map{"\($0.0): " + ($0.1?.description ?? "nil")}.joinWithSeparator(", ") + "]"
         }
     }
     
@@ -381,8 +381,8 @@ extension JSON: Printable, DebugPrintable {
         case let .BoolValue(v): return v.description
         case let .NumberValue(v): return v.description
         case let .StringValue(v): return v.debugDescription
-        case let .ArrayValue(v): return "[" + ", ".join(v.map{$0.debugDescription}) + "]"
-        case let .DictionaryValue(v): return "[" + ", ".join(map(v){"\($0.0.debugDescription): \($0.1.debugDescription)"}) + "]"
+        case let .ArrayValue(v): return "[" + v.map{$0.debugDescription}.joinWithSeparator(", ") + "]"
+        case let .DictionaryValue(v): return "[" + v.map{"\($0.0.debugDescription): \($0.1.debugDescription)"}.joinWithSeparator(", ") + "]"
         }
     }
 }

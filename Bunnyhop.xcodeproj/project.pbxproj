@@ -12,8 +12,6 @@
 		E93AD54A1B8221DC008BB49B /* BunnyhopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5491B8221DC008BB49B /* BunnyhopTests.swift */; };
 		E93AD5541B8224E4008BB49B /* Bunnyhop.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5531B8224E4008BB49B /* Bunnyhop.swift */; };
 		E93AD5561B83346E008BB49B /* Bunnyhop+Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5551B83346E008BB49B /* Bunnyhop+Foundation.swift */; };
-		E93AD5571B833665008BB49B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E93AD53B1B8221DC008BB49B /* Info.plist */; };
-		E93AD5581B833668008BB49B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E93AD5481B8221DC008BB49B /* Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,7 +164,9 @@
 		E93AD52E1B8221DC008BB49B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Wheely;
 				TargetAttributes = {
 					E93AD5361B8221DC008BB49B = {
@@ -200,7 +200,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E93AD5571B833665008BB49B /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,7 +207,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E93AD5581B833668008BB49B /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,6 +263,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -342,6 +341,7 @@
 				INFOPLIST_FILE = Bunnyhop/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Bunnyhop;
 				SKIP_INSTALL = YES;
 			};
@@ -357,6 +357,7 @@
 				INFOPLIST_FILE = Bunnyhop/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Bunnyhop;
 				SKIP_INSTALL = YES;
 			};
@@ -375,6 +376,7 @@
 				);
 				INFOPLIST_FILE = BunnyhopTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BunnyhopTests;
 			};
 			name = Debug;
@@ -388,6 +390,7 @@
 				);
 				INFOPLIST_FILE = BunnyhopTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BunnyhopTests;
 			};
 			name = Release;
