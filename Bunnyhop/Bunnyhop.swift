@@ -46,7 +46,7 @@ public func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
 
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
-    case let (.Nothing, .Nothing): return true
+    case (.Nothing, .Nothing): return true
     
     case let (.BoolValue(l), .BoolValue(r))                 where l == r:         return true
     case let (.BoolValue(l), .NumberValue(.IntValue(r)))    where Int(l) == r:    return true
@@ -188,7 +188,7 @@ public extension JSON {
     }
     
     public init<C: CollectionType where C.Generator.Element : JSONEncodable>(_ valueCollection: C) {
-        self.init(map(valueCollection){$0.JSONValue})
+        self.init(valueCollection.map{$0.JSONValue})
     }
     
     public func decode<T: JSONDecodable>() -> T? {
@@ -340,7 +340,7 @@ extension String: JSONDecodable, JSONEncodable {
 
 // MARK: Descriptions
 
-extension JSON.Number: Printable {
+extension JSON.Number: CustomStringConvertible {
     public var description: String {
         switch self {
         case let .IntValue(v): return v.description
@@ -350,15 +350,15 @@ extension JSON.Number: Printable {
     }
 }
 
-extension JSON: Printable, DebugPrintable {
+extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
         case .Nothing: return "nil"
         case let .BoolValue(v): return v.description
         case let .NumberValue(v): return v.description
         case let .StringValue(v): return v
-        case let .ArrayValue(v): return "[" + ", ".join(v.map{$0.description}) + "]"
-        case let .DictionaryValue(v): return "[" + ", ".join(map(v){"\($0.0): \($0.1.description)"}) + "]"
+        case let .ArrayValue(v): return "[" + v.map{$0.description}.joinWithSeparator(", ") + "]"
+        case let .DictionaryValue(v): return "[" + v.map{"\($0.0): \($0.1.description)"}.joinWithSeparator(", ") + "]"
         }
     }
     
@@ -368,8 +368,8 @@ extension JSON: Printable, DebugPrintable {
         case let .BoolValue(v): return v.description
         case let .NumberValue(v): return v.description
         case let .StringValue(v): return v.debugDescription
-        case let .ArrayValue(v): return "[" + ", ".join(v.map{$0.debugDescription}) + "]"
-        case let .DictionaryValue(v): return "[" + ", ".join(map(v){"\($0.0.debugDescription): \($0.1.debugDescription)"}) + "]"
+        case let .ArrayValue(v): return "[" + v.map{$0.debugDescription}.joinWithSeparator(", ") + "]"
+        case let .DictionaryValue(v): return "[" + v.map{"\($0.0.debugDescription): \($0.1.debugDescription)"}.joinWithSeparator(", ") + "]"
         }
     }
 }

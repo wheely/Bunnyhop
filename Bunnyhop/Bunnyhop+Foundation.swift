@@ -27,27 +27,25 @@ extension CGFloat: JSONDecodable, JSONEncodable {
 public extension JSON {
     /// Converts from NSJSONSerialization's AnyObject
     public static func fromAnyObject(anyObject: AnyObject?) -> JSON? {
-        switch anyObject {
-        
-        case let value as NSNull:
+        if anyObject is NSNull {
             return .Nothing
-        
-        case let a as NSNumber:
+            
+        } else if let a = anyObject as? NSNumber {
             switch CFNumberGetType(a as CFNumber) {
             case .SInt8Type, .SInt16Type, .SInt32Type, .SInt64Type,
-                 .CharType, .ShortType, .IntType, .LongType, .LongLongType,
-                 .CFIndexType, .NSIntegerType:
+                .CharType, .ShortType, .IntType, .LongType, .LongLongType,
+                .CFIndexType, .NSIntegerType:
                 return JSON(a as Int)
             case .Float32Type, .Float64Type, .FloatType, .CGFloatType:
                 return JSON(a as Float)
             case .DoubleType:
                 return JSON(a as Double)
             }
-        
-        case let value as String:
+            
+        } else if let value = anyObject as? String {
             return JSON(value)
-        
-        case let value as [AnyObject]:
+            
+        } else if let value = anyObject as? [AnyObject] {
             var a = [JSON]()
             for v in value {
                 if let v = JSON.fromAnyObject(v) {
@@ -58,7 +56,7 @@ public extension JSON {
             }
             return JSON(a)
             
-        case let value as [String: AnyObject]:
+        } else if let value = anyObject as? [String: AnyObject] {
             var d: [String: JSON] = [:]
             for (k, v) in value {
                 if let v = JSON.fromAnyObject(v) {
@@ -68,9 +66,6 @@ public extension JSON {
                 }
             }
             return JSON(d)
-            
-        default:
-            break
         }
         
         return nil

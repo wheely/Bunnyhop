@@ -166,6 +166,7 @@
 		E93AD52E1B8221DC008BB49B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = Wheely;
 				TargetAttributes = {
