@@ -137,13 +137,21 @@ extension JSON {
     public init<T: JSONEncodable>(_ value: T) {
         self = value.JSONValue
     }
+    
+    public init<T: CollectionType where T.Generator.Element: JSONEncodable>(_ value: T) {
+        self = .ArrayValue(value.map{.Some($0.JSONValue)})
+    }
 
-    public init(_ value: [JSONEncodable?]) {
-        self = .ArrayValue(value.map{$0.map{$0.JSONValue}})
+    public init<T: CollectionType, E: JSONEncodable where T.Generator.Element == E?>(_ value: T) {
+        self = .ArrayValue(value.map{$0?.JSONValue})
     }
     
-    public init(_ value: [String: JSONEncodable?]) {
-        self = .DictionaryValue([String: JSON?](elements: value.map {($0, $1.map{$0.JSONValue})}))
+    public init<T: JSONEncodable>(_ value: [String: T]) {
+        self = .DictionaryValue(Dictionary(elements: value.map { ($0, .Some($1.JSONValue)) }))
+    }
+    
+    public init<T: JSONEncodable>(_ value: [String: T?]) {
+        self = .DictionaryValue(Dictionary(elements: value.map { ($0, $1?.JSONValue) }))
     }
 }
 
