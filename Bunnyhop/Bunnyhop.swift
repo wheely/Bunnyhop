@@ -157,22 +157,12 @@ extension JSON {
 
 extension JSON: ArrayLiteralConvertible, DictionaryLiteralConvertible {
     public init(arrayLiteral elements: JSONEncodable?...) {
-        self = .ArrayValue(elements.map { value in
-            if let value = value {
-                return Optional<JSON>.Some(value.JSONValue)
-            } else {
-                return nil
-            }
-        })
+        self = .ArrayValue(elements.map { $0?.JSONValue })
     }
-
+    
     public init(dictionaryLiteral elements: (String, JSONEncodable?)...) {
         self = .DictionaryValue([String: JSON?](elements: elements.map { (key, value) in
-            if let value = value {
-                return (key, .Some(value.JSONValue))
-            } else {
-                return (key, nil)
-            }
+            return (key, value?.JSONValue)
         }))
     }
 }
