@@ -390,7 +390,8 @@ extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
 
 extension Dictionary {
     private init(elements: [Element]) {
-        self = elements.reduce([Key: Value]()) {(var dict, pair) in
+        self = elements.reduce([Key: Value]()) {(dict, pair) in
+            var dict = dict
             dict[pair.0] = pair.1
             return dict
         }
