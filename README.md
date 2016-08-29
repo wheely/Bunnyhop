@@ -59,21 +59,21 @@ do {
 
 
 //: Collection Recovery
-let goodAndBadBunniesJSON: JSON = [
+let bunniesJSON: JSON = [
     ["name": "Spike", "age": 1].json,  // Good
     nil,                               // Bad
     ["name": "Lily", "age": nil].json, // Bad
     ["name": "Coco", "age": 2].json,   // Good
     ].json
 do {
-    try goodAndBadBunniesJSON.decode() as [Bunny] // Throws an error
+    try bunniesJSON.decode() as [Bunny] // Throws an error
 } catch let e as JSON.Error {
     print(e) // Prints first error 'Contains nil element'
 }
 
 // Try to recover good bunnies
 let recoveredGoodBunnies: [Bunny] =
-    try goodAndBadBunniesJSON.decode { (_, error: JSON.Error) -> Bunny? in
+    try bunniesJSON.decode { (_, error: JSON.Error) -> Bunny? in
         print(error) // Prints 'Contains nil element' and 'age: Missing value'
         return nil // Skip bad bunnies
     }
@@ -82,10 +82,10 @@ print(recoveredGoodBunnies) // [Bunny(name: Optional("Spike"), age: 1),
 
 // Try to recover Lily too
 let recoveredBunnies: [Bunny] =
-    try goodAndBadBunniesJSON.decode { (JSONValue: JSON?, error: JSON.Error) -> Bunny? in
-        switch (JSONValue, error) {
-        case let (.some(JSONValue), .keyError("age", .missingValue)):
-            return Bunny(name: try JSONValue["name"].decode(), age: 0)
+    try bunniesJSON.decode { (jsonValue: JSON?, error: JSON.Error) -> Bunny? in
+        switch (jsonValue, error) {
+        case let (.some(jsonValue), .keyError("age", .missingValue)):
+            return Bunny(name: try jsonValue["name"].decode(), age: 0)
         default:
             return nil // Skip other bad bunnies
         }
