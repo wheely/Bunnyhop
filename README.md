@@ -4,36 +4,34 @@ JSON library for Swift that extensively uses type inference and no extra syntax.
 ## Hello World
 
 ```swift
-import Bunnyhop
-
 struct Bunny {
     let name: String?
     let age: Int
 }
 
 extension Bunny: JSONDecodable, JSONEncodable {
-    init(JSONValue: JSON) throws {
-        self.init(name: try JSONValue["name"].decode(),
-                  age:  try JSONValue["age"].decode())
+    init(json: JSON) throws {
+        self.init(name: try json["name"].decode(),
+                  age:  try json["age"].decode())
     }
 
-    var JSONValue: JSON {
-        return ["name": name, "age": age]
+    var json: JSON {
+        return ["name": name, "age": age].json
     }
 }
 
 
 //: Decoding
-let spikeJSON: JSON = ["name": "Spike", "age": 1]
+let spikeJSON: JSON = ["name": "Spike", "age": 1].json
 let spike: Bunny = try! spikeJSON.decode() // {name "Spike", age 1}
 
 
 //: Encoding
-spikeJSON == JSON(spike) // true
+spikeJSON == spike.json // true
 
 
 //: Serialization
-String(data: spikeJSON.encode(), encoding: NSUTF8StringEncoding)
+String(data: spikeJSON.encode(), encoding: .utf8)
 
 
 //: Deserialization
@@ -41,31 +39,32 @@ try JSON(data: spikeJSON.encode())
 
 
 //: Error Handling
-let badSpikeJSON: JSON = ["name": "Spike", "age": nil]
+let badSpikeJSON: JSON = ["name": "Spike", "age": nil].json
 do {
     try badSpikeJSON.decode() as Bunny // Throws an error
 } catch let e as JSON.Error {
     print(e) // Prints 'age: Missing value'
 }
 
-let strangeSpikeJSON: JSON = ["name": JSON(["Spike"]), "age": 1]
+let strangeSpikeJSON: JSON = ["name": ["Spike"].json, "age": 1].json
 do {
     try strangeSpikeJSON.decode() as Bunny // Throws an error
 } catch let e as JSON.Error {
     print(e) // Prints 'name: Can't initialize String with [Optional("Spike")]'
+    
+    // You may want to initialize `name` with `nil` in this case.
+    // To achieve this use `try? json["name"].decode()` instead of `try json["name"].decode() in
+    // `init(json: JSON)`.
 }
-// To avoid this behavior and initialize optional name with nil use
-// `try? JSONValue["name"].decode()` instead of `try JSONValue["name"].decode()`
-// in Bunny.init(JSONValue: JSON)
 
 
 //: Collection Recovery
 let goodAndBadBunniesJSON: JSON = [
-    JSON(["name": "Spike", "age": 1]),  // Good
-    nil,                                // Bad
-    JSON(["name": "Lily", "age": nil]), // Bad
-    JSON(["name": "Coco", "age": 2]),   // Good
-    ]
+    ["name": "Spike", "age": 1].json,  // Good
+    nil,                               // Bad
+    ["name": "Lily", "age": nil].json, // Bad
+    ["name": "Coco", "age": 2].json,   // Good
+    ].json
 do {
     try goodAndBadBunniesJSON.decode() as [Bunny] // Throws an error
 } catch let e as JSON.Error {
@@ -85,7 +84,7 @@ print(recoveredGoodBunnies) // [Bunny(name: Optional("Spike"), age: 1),
 let recoveredBunnies: [Bunny] =
     try goodAndBadBunniesJSON.decode { (JSONValue: JSON?, error: JSON.Error) -> Bunny? in
         switch (JSONValue, error) {
-        case let (.Some(JSONValue), .KeyError("age", .MissingValue)):
+        case let (.some(JSONValue), .keyError("age", .missingValue)):
             return Bunny(name: try JSONValue["name"].decode(), age: 0)
         default:
             return nil // Skip other bad bunnies
