@@ -25,7 +25,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		E908181C1BAFF6FC0002BC63 /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; };
 		E93AD5371B8221DC008BB49B /* Bunnyhop.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bunnyhop.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93AD53B1B8221DC008BB49B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E93AD53C1B8221DC008BB49B /* Bunnyhop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bunnyhop.h; sourceTree = "<group>"; };
@@ -58,7 +57,6 @@
 		E93AD52D1B8221DC008BB49B = {
 			isa = PBXGroup;
 			children = (
-				E908181C1BAFF6FC0002BC63 /* Playground.playground */,
 				E93AD5391B8221DC008BB49B /* Bunnyhop */,
 				E93AD5461B8221DC008BB49B /* BunnyhopTests */,
 				E93AD5381B8221DC008BB49B /* Products */,
