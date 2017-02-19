@@ -6,23 +6,6 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
-import UIKit
-
-
-extension CGFloat: JSONDecodable, JSONEncodable {
-    public init?(JSONValue: JSON) {
-        if let value: Double = JSONValue.decode() {
-            self.init(value)
-        } else {
-            return nil
-        }
-    }
-    
-    public var JSONValue: JSON {
-        return .NumberValue(.DoubleValue(Double(self)))
-    }
-}
-
 public extension JSON {
     /// Converts from NSJSONSerialization's AnyObject
     public static func fromAnyObject(anyObject: AnyObject?) -> JSON? {

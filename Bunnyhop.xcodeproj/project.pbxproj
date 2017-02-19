@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44A8CE0C1E5A0E620085D280 /* Bunnyhop+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A8CE0B1E5A0E620085D280 /* Bunnyhop+UIKit.swift */; };
 		E93AD53D1B8221DC008BB49B /* Bunnyhop.h in Headers */ = {isa = PBXBuildFile; fileRef = E93AD53C1B8221DC008BB49B /* Bunnyhop.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E93AD5431B8221DC008BB49B /* Bunnyhop.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E93AD5371B8221DC008BB49B /* Bunnyhop.framework */; };
 		E93AD54A1B8221DC008BB49B /* BunnyhopTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93AD5491B8221DC008BB49B /* BunnyhopTests.swift */; };
@@ -25,6 +26,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		44A8CE0B1E5A0E620085D280 /* Bunnyhop+UIKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bunnyhop+UIKit.swift"; sourceTree = "<group>"; };
 		E93AD5371B8221DC008BB49B /* Bunnyhop.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bunnyhop.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93AD53B1B8221DC008BB49B /* Bunnyhop-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Bunnyhop-Info.plist"; sourceTree = "<group>"; };
 		E93AD53C1B8221DC008BB49B /* Bunnyhop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bunnyhop.h; sourceTree = "<group>"; };
@@ -54,6 +56,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		44A8CE0D1E5A0E9D0085D280 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E93AD5531B8224E4008BB49B /* Bunnyhop.swift */,
+				44A8CE0B1E5A0E620085D280 /* Bunnyhop+UIKit.swift */,
+				E93AD5551B83346E008BB49B /* Bunnyhop+Foundation.swift */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
 		E93AD52D1B8221DC008BB49B = {
 			isa = PBXGroup;
 			children = (
@@ -75,8 +87,7 @@
 		E93AD5391B8221DC008BB49B /* Bunnyhop */ = {
 			isa = PBXGroup;
 			children = (
-				E93AD5531B8224E4008BB49B /* Bunnyhop.swift */,
-				E93AD5551B83346E008BB49B /* Bunnyhop+Foundation.swift */,
+				44A8CE0D1E5A0E9D0085D280 /* Sources */,
 				E93AD53A1B8221DC008BB49B /* Supporting Files */,
 			);
 			path = Bunnyhop;
@@ -220,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E93AD5541B8224E4008BB49B /* Bunnyhop.swift in Sources */,
+				44A8CE0C1E5A0E620085D280 /* Bunnyhop+UIKit.swift in Sources */,
 				E93AD5561B83346E008BB49B /* Bunnyhop+Foundation.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
