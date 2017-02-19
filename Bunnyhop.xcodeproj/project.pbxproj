@@ -77,7 +77,6 @@
 			children = (
 				E93AD5531B8224E4008BB49B /* Bunnyhop.swift */,
 				E93AD5551B83346E008BB49B /* Bunnyhop+Foundation.swift */,
-				E93AD53C1B8221DC008BB49B /* Bunnyhop.h */,
 				E93AD53A1B8221DC008BB49B /* Supporting Files */,
 			);
 			path = Bunnyhop;
@@ -86,6 +85,7 @@
 		E93AD53A1B8221DC008BB49B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E93AD53C1B8221DC008BB49B /* Bunnyhop.h */,
 				E93AD53B1B8221DC008BB49B /* Info.plist */,
 			);
 			name = "Supporting Files";

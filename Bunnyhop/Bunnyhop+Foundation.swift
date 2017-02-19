@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 
 extension CGFloat: JSONDecodable, JSONEncodable {

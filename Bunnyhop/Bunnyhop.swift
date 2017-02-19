@@ -6,9 +6,6 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
-import Foundation
-
-
 public enum JSON: Equatable {
     public enum Number: Equatable {
         case IntValue(Int)
