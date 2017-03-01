@@ -19,6 +19,6 @@ extension CGFloat: JSONDecodable, JSONEncodable {
     }
 
     public var JSONValue: JSON {
-        return .NumberValue(.DoubleValue(Double(self)))
+        return .numberValue(.doubleValue(Double(self)))
     }
 }

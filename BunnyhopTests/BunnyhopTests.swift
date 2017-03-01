@@ -25,7 +25,7 @@ class BunnyhopTests: XCTestCase {
         
         init?(JSONValue: JSON) {
             if let name: String = JSONValue["name"]?.decode(),
-                   legCount: Int = JSONValue["leg_count"]?.decode() {
+                   let legCount: Int = JSONValue["leg_count"]?.decode() {
                 self.init(name: name, legCount: legCount)
             } else {
                 return nil

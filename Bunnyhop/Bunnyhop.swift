@@ -8,32 +8,32 @@
 
 public enum JSON: Equatable {
     public enum Number: Equatable {
-        case IntValue(Int)
-        case FloatValue(Float)
-        case DoubleValue(Double)
+        case intValue(Int)
+        case floatValue(Float)
+        case doubleValue(Double)
     }
     
-    case BoolValue(Bool)
-    case NumberValue(Number)
-    case StringValue(String)
-    case ArrayValue([JSON?])
-    case DictionaryValue([String: JSON?])
+    case boolValue(Bool)
+    case numberValue(Number)
+    case stringValue(String)
+    case arrayValue([JSON?])
+    case dictionaryValue([String: JSON?])
 }
 
 
 public func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
     switch (lhs, rhs) {
-    case let (.IntValue(l),    .IntValue(r))    where l == r:         return true
-    case let (.IntValue(l),    .FloatValue(r))  where Float(l) == r:  return true
-    case let (.IntValue(l),    .DoubleValue(r)) where Double(l) == r: return true
+    case let (.intValue(l),    .intValue(r))    where l == r:         return true
+    case let (.intValue(l),    .floatValue(r))  where Float(l) == r:  return true
+    case let (.intValue(l),    .doubleValue(r)) where Double(l) == r: return true
     
-    case let (.FloatValue(l),  .IntValue(r))    where l == Float(r):  return true
-    case let (.FloatValue(l),  .FloatValue(r))  where l == r:         return true
-    case let (.FloatValue(l),  .DoubleValue(r)) where Double(l) == r: return true
+    case let (.floatValue(l),  .intValue(r))    where l == Float(r):  return true
+    case let (.floatValue(l),  .floatValue(r))  where l == r:         return true
+    case let (.floatValue(l),  .doubleValue(r)) where Double(l) == r: return true
     
-    case let (.DoubleValue(l), .IntValue(r))    where l == Double(r): return true
-    case let (.DoubleValue(l), .FloatValue(r))  where l == Double(r): return true
-    case let (.DoubleValue(l), .DoubleValue(r)) where l == r:         return true
+    case let (.doubleValue(l), .intValue(r))    where l == Double(r): return true
+    case let (.doubleValue(l), .floatValue(r))  where l == Double(r): return true
+    case let (.doubleValue(l), .doubleValue(r)) where l == r:         return true
         
     default: return false
     }
@@ -42,18 +42,18 @@ public func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
 
 public func ==(lhs: JSON, rhs: JSON) -> Bool {
     switch (lhs, rhs) {
-    case let (.BoolValue(l), .BoolValue(r))                 where l == r:          return true
-    case let (.BoolValue(l), .NumberValue(.IntValue(r)))    where Int(l) == r:     return true
-    case let (.BoolValue(l), .NumberValue(.FloatValue(r)))  where Float(l) == r:   return true
-    case let (.BoolValue(l), .NumberValue(.DoubleValue(r))) where Double(l) == r:  return true
-    case let (.NumberValue(.IntValue(l)),    .BoolValue(r)) where l == Int(r):     return true
-    case let (.NumberValue(.FloatValue(l)),  .BoolValue(r)) where l == Float(r):   return true
-    case let (.NumberValue(.DoubleValue(l)), .BoolValue(r)) where l == Double(r):  return true
+    case let (.boolValue(l), .boolValue(r))                 where l == r:          return true
+    case let (.boolValue(l), .numberValue(.intValue(r)))    where Int(l) == r:     return true
+    case let (.boolValue(l), .numberValue(.floatValue(r)))  where Float(l) == r:   return true
+    case let (.boolValue(l), .numberValue(.doubleValue(r))) where Double(l) == r:  return true
+    case let (.numberValue(.intValue(l)),    .boolValue(r)) where l == Int(r):     return true
+    case let (.numberValue(.floatValue(l)),  .boolValue(r)) where l == Float(r):   return true
+    case let (.numberValue(.doubleValue(l)), .boolValue(r)) where l == Double(r):  return true
 
-    case let (.NumberValue(l),     .NumberValue(r))         where l == r:          return true
-    case let (.StringValue(l),     .StringValue(r))         where l == r:          return true
-    case let (.ArrayValue(l),      .ArrayValue(r))          where l.elementsEqual(r, isEquivalent: ==): return true
-    case let (.DictionaryValue(l), .DictionaryValue(r))     where l.elementsEqual(r) {$0.0.0 == $0.1.0 && $0.0.1 == $0.1.1}: return true
+    case let (.numberValue(l),     .numberValue(r))         where l == r:          return true
+    case let (.stringValue(l),     .stringValue(r))         where l == r:          return true
+    case let (.arrayValue(l),      .arrayValue(r))          where l.elementsEqual(r, by: ==): return true
+    case let (.dictionaryValue(l), .dictionaryValue(r))     where l.elementsEqual(r) {$0.0.0 == $0.1.0 && $0.0.1 == $0.1.1}: return true
     
     default: return false
     }
@@ -62,29 +62,29 @@ public func ==(lhs: JSON, rhs: JSON) -> Bool {
 
 // MARK: LiteralConvertible Initializers
 
-extension JSON: BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiteralConvertible, UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, StringLiteralConvertible {
+extension JSON: ExpressibleByBooleanLiteral, ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral, ExpressibleByUnicodeScalarLiteral, ExpressibleByExtendedGraphemeClusterLiteral, ExpressibleByStringLiteral {
     public init(booleanLiteral value: Bool) {
-        self = .BoolValue(value)
+        self = .boolValue(value)
     }
-    
+
     public init(integerLiteral value: Int) {
-        self = .NumberValue(Number.IntValue(value))
+        self = .numberValue(Number.intValue(value))
     }
-    
+
     public init(floatLiteral value: Float) {
-        self = .NumberValue(Number.FloatValue(value))
+        self = .numberValue(Number.floatValue(value))
     }
     
     public init(unicodeScalarLiteral value: String) {
-        self = .StringValue(value)
+        self = .stringValue(value)
     }
-    
+
     public init(extendedGraphemeClusterLiteral value: String) {
-        self = .StringValue(value)
+        self = .stringValue(value)
     }
     
     public init(stringLiteral value: String) {
-        self = .StringValue(value)
+        self = .stringValue(value)
     }
 }
 
@@ -94,7 +94,7 @@ extension JSON: BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiter
 public extension JSON {
     public var arrayValue: [JSON?]? {
         switch self {
-        case let .ArrayValue(v):
+        case let .arrayValue(v):
             return v
         default:
             return nil
@@ -102,7 +102,7 @@ public extension JSON {
     }
     
     public subscript (index: Int) -> JSON? {
-        if let array = arrayValue where index <= array.endIndex {
+        if let array = arrayValue, index <= array.endIndex {
             return array[index]
         } else {
             return nil
@@ -111,7 +111,7 @@ public extension JSON {
     
     public var dictionaryValue: [String: JSON?]? {
         switch self {
-        case let .DictionaryValue(v):
+        case let .dictionaryValue(v):
             return v
         default:
             return nil
@@ -135,30 +135,30 @@ extension JSON {
         self = value.JSONValue
     }
     
-    public init<T: CollectionType where T.Generator.Element: JSONEncodable>(_ value: T) {
-        self = .ArrayValue(value.map{.Some($0.JSONValue)})
+    public init<T: Collection>(_ value: T) where T.Iterator.Element: JSONEncodable {
+        self = .arrayValue(value.map{.some($0.JSONValue)})
     }
 
-    public init<T: CollectionType, E: JSONEncodable where T.Generator.Element == E?>(_ value: T) {
-        self = .ArrayValue(value.map{$0?.JSONValue})
+    public init<T: Collection, E: JSONEncodable>(_ value: T) where T.Iterator.Element == E? {
+        self = .arrayValue(value.map{$0?.JSONValue})
     }
     
     public init<T: JSONEncodable>(_ value: [String: T]) {
-        self = .DictionaryValue(Dictionary(elements: value.map { ($0, .Some($1.JSONValue)) }))
+        self = .dictionaryValue(Dictionary(elements: value.map { ($0, .some($1.JSONValue)) }))
     }
     
     public init<T: JSONEncodable>(_ value: [String: T?]) {
-        self = .DictionaryValue(Dictionary(elements: value.map { ($0, $1?.JSONValue) }))
+        self = .dictionaryValue(Dictionary(elements: value.map { ($0, $1?.JSONValue) }))
     }
 }
 
-extension JSON: ArrayLiteralConvertible, DictionaryLiteralConvertible {
+extension JSON: ExpressibleByArrayLiteral, ExpressibleByDictionaryLiteral {
     public init(arrayLiteral elements: JSONEncodable?...) {
-        self = .ArrayValue(elements.map { $0?.JSONValue })
+        self = .arrayValue(elements.map { $0?.JSONValue })
     }
     
     public init(dictionaryLiteral elements: (String, JSONEncodable?)...) {
-        self = .DictionaryValue([String: JSON?](elements: elements.map { (key, value) in
+        self = .dictionaryValue([String: JSON?](elements: elements.map { (key, value) in
             return (key, value?.JSONValue)
         }))
     }
@@ -176,7 +176,7 @@ extension JSON {
         return T(JSONValue: self)
     }
     
-    public func decode<W: RawRepresentable where W.RawValue: JSONDecodable>() -> W? {
+    public func decode<W: RawRepresentable>() -> W? where W.RawValue: JSONDecodable {
         return W.RawValue(JSONValue: self).flatMap{W(rawValue: $0)}
     }
     
@@ -221,23 +221,23 @@ extension JSON: JSONDecodable, JSONEncodable {
 extension Bool: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .BoolValue(v):                 self = v
-        case let .NumberValue(.IntValue(v)):    self = Bool(v)
-        case let .NumberValue(.FloatValue(v)):  self = Bool(v)
-        case let .NumberValue(.DoubleValue(v)): self = Bool(v)
+        case let .boolValue(v):                 self = v
+        case let .numberValue(.intValue(v)):    self = Bool(v)
+        case let .numberValue(.floatValue(v)):  self = Bool(v)
+        case let .numberValue(.doubleValue(v)): self = Bool(v)
         default: return nil
         }
     }
     
     public var JSONValue: JSON {
-        return .BoolValue(self)
+        return .boolValue(self)
     }
 }
 
 private extension String {
     func toNumber() -> Int? {
         var v: Int = 0
-        if NSScanner(string: self).scanInteger(&v) {
+        if Scanner(string: self).scanInt(&v) {
             return v
         }
         return nil
@@ -245,7 +245,7 @@ private extension String {
     
     func toNumber() -> Float? {
         var v: Float = 0
-        if NSScanner(string: self).scanFloat(&v) {
+        if Scanner(string: self).scanFloat(&v) {
             return v
         }
         return nil
@@ -253,7 +253,7 @@ private extension String {
     
     func toNumber() -> Double? {
         var v: Double = 0
-        if NSScanner(string: self).scanDouble(&v) {
+        if Scanner(string: self).scanDouble(&v) {
             return v
         }
         return nil
@@ -263,11 +263,11 @@ private extension String {
 extension Int: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .NumberValue(.IntValue(v)):    self = v
-        case let .NumberValue(.FloatValue(v)):  self = Int(v)
-        case let .NumberValue(.DoubleValue(v)): self = Int(v)
+        case let .numberValue(.intValue(v)):    self = v
+        case let .numberValue(.floatValue(v)):  self = Int(v)
+        case let .numberValue(.doubleValue(v)): self = Int(v)
         
-        case let .StringValue(v):
+        case let .stringValue(v):
             if let v: Int = v.toNumber() {
                 self = v
             } else {
@@ -280,18 +280,18 @@ extension Int: JSONDecodable, JSONEncodable {
     }
     
     public var JSONValue: JSON {
-        return .NumberValue(.IntValue(self))
+        return .numberValue(.intValue(self))
     }
 }
 
 extension Float: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .NumberValue(.IntValue(v)):    self = Float(v)
-        case let .NumberValue(.FloatValue(v)):  self = v
-        case let .NumberValue(.DoubleValue(v)): self = Float(v)
+        case let .numberValue(.intValue(v)):    self = Float(v)
+        case let .numberValue(.floatValue(v)):  self = v
+        case let .numberValue(.doubleValue(v)): self = Float(v)
         
-        case let .StringValue(v):
+        case let .stringValue(v):
             if let v: Float = v.toNumber() {
                 self = v
             } else {
@@ -304,18 +304,18 @@ extension Float: JSONDecodable, JSONEncodable {
     }
     
     public var JSONValue: JSON {
-        return .NumberValue(.FloatValue(self))
+        return .numberValue(.floatValue(self))
     }
 }
 
 extension Double: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .NumberValue(.IntValue(v)):    self = Double(v)
-        case let .NumberValue(.FloatValue(v)):  self = Double(v)
-        case let .NumberValue(.DoubleValue(v)): self = v
+        case let .numberValue(.intValue(v)):    self = Double(v)
+        case let .numberValue(.floatValue(v)):  self = Double(v)
+        case let .numberValue(.doubleValue(v)): self = v
         
-        case let .StringValue(v):
+        case let .stringValue(v):
             if let v: Double = v.toNumber() {
                 self = v
             } else {
@@ -328,14 +328,14 @@ extension Double: JSONDecodable, JSONEncodable {
     }
     
     public var JSONValue: JSON {
-        return .NumberValue(.DoubleValue(self))
+        return .numberValue(.doubleValue(self))
     }
 }
 
 extension String: JSONDecodable, JSONEncodable {
     public init?(JSONValue: JSON) {
         switch JSONValue {
-        case let .StringValue(v):
+        case let .stringValue(v):
             self = v
         default:
             return nil
@@ -343,7 +343,7 @@ extension String: JSONDecodable, JSONEncodable {
     }
     
     public var JSONValue: JSON {
-        return .StringValue(self)
+        return .stringValue(self)
     }
 }
 
@@ -353,9 +353,9 @@ extension String: JSONDecodable, JSONEncodable {
 extension JSON.Number: CustomStringConvertible {
     public var description: String {
         switch self {
-        case let .IntValue(v): return v.description
-        case let .FloatValue(v): return v.description
-        case let .DoubleValue(v): return v.description
+        case let .intValue(v): return v.description
+        case let .floatValue(v): return v.description
+        case let .doubleValue(v): return v.description
         }
     }
 }
@@ -363,21 +363,21 @@ extension JSON.Number: CustomStringConvertible {
 extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
-        case let .BoolValue(v): return v.description
-        case let .NumberValue(v): return v.description
-        case let .StringValue(v): return v
-        case let .ArrayValue(v): return "[" + v.map{$0?.description ?? "nil"}.joinWithSeparator(", ") + "]"
-        case let .DictionaryValue(v): return "[" + v.map{"\($0.0): " + ($0.1?.description ?? "nil")}.joinWithSeparator(", ") + "]"
+        case let .boolValue(v): return v.description
+        case let .numberValue(v): return v.description
+        case let .stringValue(v): return v
+        case let .arrayValue(v): return "[" + v.map{$0?.description ?? "nil"}.joined(separator: ", ") + "]"
+        case let .dictionaryValue(v): return "[" + v.map{"\($0.0): " + ($0.1?.description ?? "nil")}.joined(separator: ", ") + "]"
         }
     }
     
     public var debugDescription: String {
         switch self {
-        case let .BoolValue(v): return v.description
-        case let .NumberValue(v): return v.description
-        case let .StringValue(v): return v.debugDescription
-        case let .ArrayValue(v): return "[" + v.map{$0.debugDescription}.joinWithSeparator(", ") + "]"
-        case let .DictionaryValue(v): return "[" + v.map{"\($0.0.debugDescription): \($0.1.debugDescription)"}.joinWithSeparator(", ") + "]"
+        case let .boolValue(v): return v.description
+        case let .numberValue(v): return v.description
+        case let .stringValue(v): return v.debugDescription
+        case let .arrayValue(v): return "[" + v.map{$0.debugDescription}.joined(separator: ", ") + "]"
+        case let .dictionaryValue(v): return "[" + v.map{"\($0.0.debugDescription): \($0.1.debugDescription)"}.joined(separator: ", ") + "]"
         }
     }
 }
@@ -385,12 +385,42 @@ extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
 
 // MARK: Helpers
 
-extension Dictionary {
-    private init(elements: [Element]) {
+private extension Dictionary {
+     init(elements: [Element]) {
         self = elements.reduce([Key: Value]()) {(dict, pair) in
             var dict = dict
             dict[pair.0] = pair.1
             return dict
         }
+    }
+}
+
+private extension Int {
+    init(_ bool: Bool) {
+        self = bool ? 1 : 0
+    }
+}
+
+private extension Float {
+    init(_ bool: Bool) {
+        self = bool ? 1.0 : 0.0
+    }
+}
+
+private extension Double {
+    init(_ bool: Bool) {
+        self = bool ? 1.0 : 0.0
+    }
+}
+
+private extension Bool {
+    init(_ int: Int) {
+        self = int != 0
+    }
+    init(_ float: Float) {
+        self = float != 0.0
+    }
+    init(_ double: Double) {
+        self = double != 0.0
     }
 }

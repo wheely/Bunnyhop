@@ -8,7 +8,7 @@
 
 public extension JSON {
     /// Converts from NSJSONSerialization's AnyObject
-    public static func fromAnyObject(anyObject: AnyObject?) -> JSON? {
+    public static func fromAnyObject(_ anyObject: AnyObject?) -> JSON? {
         switch anyObject {
         
         case _ as NSNull:
@@ -16,28 +16,28 @@ public extension JSON {
         
         case let a as NSNumber:
             switch CFNumberGetType(a as CFNumber) {
-            case .SInt8Type, .SInt16Type, .SInt32Type, .SInt64Type,
-                 .CharType, .ShortType, .IntType, .LongType, .LongLongType,
-                 .CFIndexType, .NSIntegerType:
+            case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type,
+                 .charType, .shortType, .intType, .longType, .longLongType,
+                 .cfIndexType, .nsIntegerType:
                 return (a as Int).JSONValue
-            case .Float32Type, .Float64Type, .FloatType, .CGFloatType:
+            case .float32Type, .float64Type, .floatType, .cgFloatType:
                 return (a as Float).JSONValue
-            case .DoubleType:
+            case .doubleType:
                 return (a as Double).JSONValue
             }
         
         case let value as String:
-            return .StringValue(value)
+            return .stringValue(value)
         
         case let value as [AnyObject]:
-            return .ArrayValue(value.map{JSON.fromAnyObject($0)})
+            return .arrayValue(value.map{JSON.fromAnyObject($0)})
             
         case let value as [String: AnyObject]:
             var d: [String: JSON?] = [:]
             for (k, v) in value {
                 d[k] = JSON.fromAnyObject(v)
             }
-            return .DictionaryValue(d)
+            return .dictionaryValue(d)
             
         default:
             break
@@ -48,14 +48,14 @@ public extension JSON {
     
     public func toAnyObject() -> AnyObject {
         switch self {
-        case let .BoolValue(v):                 return v as NSNumber
-        case let .NumberValue(.IntValue(v)):    return v as NSNumber
-        case let .NumberValue(.FloatValue(v)):  return v as NSNumber
-        case let .NumberValue(.DoubleValue(v)): return v as NSNumber
-        case let .StringValue(v):               return v as NSString
-        case let .ArrayValue(v):                return v.map{$0.map{$0.toAnyObject()} ?? NSNull()} as NSArray
+        case let .boolValue(v):                 return v as NSNumber
+        case let .numberValue(.intValue(v)):    return v as NSNumber
+        case let .numberValue(.floatValue(v)):  return v as NSNumber
+        case let .numberValue(.doubleValue(v)): return v as NSNumber
+        case let .stringValue(v):               return v as NSString
+        case let .arrayValue(v):                return v.map{$0.map{$0.toAnyObject()} ?? NSNull()} as NSArray
         
-        case let .DictionaryValue(v):
+        case let .dictionaryValue(v):
             var d: [String: AnyObject] = [:]
             for (k, v) in v {
                 d[k] = v.map{$0.toAnyObject()} ?? NSNull()

@@ -182,11 +182,11 @@
 				TargetAttributes = {
 					E93AD5361B8221DC008BB49B = {
 						CreatedOnToolsVersion = 6.4;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0820;
 					};
 					E93AD5411B8221DC008BB49B = {
 						CreatedOnToolsVersion = 6.4;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0820;
 					};
 				};
 			};
@@ -364,7 +364,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Bunnyhop;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -382,7 +382,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Bunnyhop;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -401,7 +401,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BunnyhopTests;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -416,7 +416,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.wheely.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BunnyhopTests;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
