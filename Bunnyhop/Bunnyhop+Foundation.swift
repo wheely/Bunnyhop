@@ -63,4 +63,6 @@ public extension JSON {
             return d as NSDictionary
         }
     }
+
+    // TODO: Add conversion to/from Any for new JSONSerialization
 }
