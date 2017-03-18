@@ -19,11 +19,11 @@ public extension JSON {
             case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type,
                  .charType, .shortType, .intType, .longType, .longLongType,
                  .cfIndexType, .nsIntegerType:
-                return (a as Int).JSONValue
+                return a.intValue.JSONValue
             case .float32Type, .float64Type, .floatType, .cgFloatType:
-                return (a as Float).JSONValue
+                return a.floatValue.JSONValue
             case .doubleType:
-                return (a as Double).JSONValue
+                return a.doubleValue.JSONValue
             }
         
         case let value as String:
