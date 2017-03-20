@@ -14,7 +14,7 @@ class BunnyhopTests: XCTestCase {
 
     func testReadingFromFile() {
         let bunnyJSON = jsonFromFile(named: "Felix")!
-        let bunny = Bunny(jsonValue: bunnyJSON)!
+        let bunny = Bunny(json: bunnyJSON)!
 
         XCTAssertEqual(bunny.name, "Felix", "The name is wrong")
         XCTAssertEqual(bunny.numberOfLegs, 10, "Number of legs is wrong")

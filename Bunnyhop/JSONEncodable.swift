@@ -7,14 +7,14 @@
 //
 
 public protocol JSONEncodable {
-    var jsonValue: JSON { get }
+    var json: JSON { get }
 }
 
 
 // MARK: - JSON+JSONEncodable
 
 extension JSON: JSONEncodable {
-    public var jsonValue: JSON {
+    public var json: JSON {
         return self
     }
 }
@@ -25,35 +25,35 @@ extension JSON: JSONEncodable {
 extension JSON {
     
     public init<T: JSONEncodable>(_ value: T) {
-        self = value.jsonValue
+        self = value.json
     }
 
     public init<T: Collection>(_ value: T) where T.Iterator.Element: JSONEncodable {
-        self = .arrayValue(value.map { .some($0.jsonValue) })
+        self = .arrayValue(value.map { .some($0.json) })
     }
 
     public init<T: Collection, E: JSONEncodable>(_ value: T) where T.Iterator.Element == E? {
-        self = .arrayValue(value.map { $0?.jsonValue })
+        self = .arrayValue(value.map { $0?.json })
     }
 
     public init<T: JSONEncodable>(_ elements: [String: T]) {
-        self = .dictionaryValue(Dictionary(elements: elements.map { ($0, .some($1.jsonValue)) }))
+        self = .dictionaryValue(Dictionary(elements: elements.map { ($0, .some($1.json)) }))
     }
 
     public init<T: JSONEncodable>(_ elements: [String: T?]) {
-        self = .dictionaryValue(Dictionary(elements: elements.map { ($0, $1?.jsonValue) }))
+        self = .dictionaryValue(Dictionary(elements: elements.map { ($0, $1?.json) }))
     }
 }
 
 extension JSON: ExpressibleByArrayLiteral {
     public init(arrayLiteral elements: JSONEncodable?...) {
-        self = .arrayValue(elements.map { $0?.jsonValue })
+        self = .arrayValue(elements.map { $0?.json })
     }
 }
 
 extension JSON: ExpressibleByDictionaryLiteral {
     public init(dictionaryLiteral elements: (String, JSONEncodable?)...) {
-        self = .dictionaryValue(Dictionary(elements: elements.map { ($0, $1?.jsonValue) }))
+        self = .dictionaryValue(Dictionary(elements: elements.map { ($0, $1?.json) }))
     }
 }
 

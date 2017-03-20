@@ -30,7 +30,7 @@ private enum JSONKey {
 
 extension Bunny: JSONDecodable {
 
-    var jsonValue: JSON {
+    var json: JSON {
         return [
             JSONKey.name: name,
             JSONKey.numberOfLegs: numberOfLegs
@@ -40,9 +40,9 @@ extension Bunny: JSONDecodable {
 
 extension Bunny: JSONEncodable {
 
-    init?(jsonValue: JSON) {
-        if let name: String = jsonValue[JSONKey.name]?.decode(),
-            let legCount: Int = jsonValue[JSONKey.numberOfLegs]?.decode() {
+    init?(json: JSON) {
+        if let name: String = json[JSONKey.name]?.decode(),
+            let legCount: Int = json[JSONKey.numberOfLegs]?.decode() {
             self.init(name: name, legCount: legCount)
         } else {
             return nil

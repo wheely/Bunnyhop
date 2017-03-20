@@ -7,15 +7,15 @@
 //
 
 extension Bool: JSONEncodable {
-    public var jsonValue: JSON {
+    public var json: JSON {
         return .boolValue(self)
     }
 }
 
 extension Bool: JSONDecodable {
     
-    public init?(jsonValue: JSON) {
-        switch jsonValue {
+    public init?(json: JSON) {
+        switch json {
         case let .boolValue(v):                 self = v
 
         // TODO: Research whether Number-to-Bool conversions are actually needed.

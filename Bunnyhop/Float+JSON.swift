@@ -7,15 +7,15 @@
 //
 
 extension Float: JSONEncodable {
-    public var jsonValue: JSON {
+    public var json: JSON {
         return .numberValue(.floatValue(self))
     }
 }
 
 extension Float: JSONDecodable {
     
-    public init?(jsonValue: JSON) {
-        switch jsonValue {
+    public init?(json: JSON) {
+        switch json {
         case let .numberValue(.intValue(v)):    self = Float(v)
         case let .numberValue(.floatValue(v)):  self = v
         case let .numberValue(.doubleValue(v)): self = Float(v)

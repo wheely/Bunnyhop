@@ -11,15 +11,15 @@ import UIKit
 
 extension CGFloat: JSONEncodable {
     
-    public var jsonValue: JSON {
+    public var json: JSON {
         return .numberValue(.doubleValue(Double(self)))
     }
 }
 
 extension CGFloat: JSONDecodable {
 
-    public init?(jsonValue: JSON) {
-        if let value: Double = jsonValue.decode() {
+    public init?(json: JSON) {
+        if let value: Double = json.decode() {
             self.init(value)
         } else {
             return nil

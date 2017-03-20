@@ -7,15 +7,15 @@
 //
 
 extension String: JSONEncodable {
-    public var jsonValue: JSON {
+    public var json: JSON {
         return .stringValue(self)
     }
 }
 
 extension String: JSONDecodable {
 
-    public init?(jsonValue: JSON) {
-        switch jsonValue {
+    public init?(json: JSON) {
+        switch json {
         case let .stringValue(v):
             self = v
         default:

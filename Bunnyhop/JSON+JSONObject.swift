@@ -6,60 +6,68 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
+/// Converts from JSONSerialization's Any.
+public typealias JSONObject = Any
+
 public extension JSON {
-    
-    /// Converts from JSONSerialization's Any.
-    public static func from(jsonObject: Any?) -> JSON? {
+
+    init?(jsonObject: JSONObject) {
+        var json: JSON?
+
         switch jsonObject {
-        
-        case _ as NSNull:
-            return nil
-        
+
         case let a as NSNumber:
             switch CFNumberGetType(a as CFNumber) {
             case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type,
                  .charType, .shortType, .intType, .longType, .longLongType,
                  .cfIndexType, .nsIntegerType:
-                return a.intValue.jsonValue
+                json = a.intValue.json
             case .float32Type, .float64Type, .floatType, .cgFloatType:
-                return a.floatValue.jsonValue
+                json = a.floatValue.json
             case .doubleType:
-                return a.doubleValue.jsonValue
+                json = a.doubleValue.json
             }
-        
+
         case let value as String:
-            return .stringValue(value)
-        
+            json = .stringValue(value)
+
         case let value as [Any]:
-            return .arrayValue(value.map { JSON.from(jsonObject: $0) })
-            
+            json = .arrayValue(value.map { JSON(jsonObject: $0) })
+
         case let value as [String: Any]:
             var d: [String: JSON?] = [:]
             for (k, v) in value {
-                d[k] = JSON.from(jsonObject: v)
+                d[k] = JSON(jsonObject: v)
             }
-            return .dictionaryValue(d)
-            
+            json = .dictionaryValue(d)
+
+        case is NSNull:
+            break
+
         default:
             break
         }
-        
-        return nil
+
+        if let json = json {
+            self = json
+        } else {
+            return nil
+        }
     }
     
-    public func toJSONObject() -> Any {
+    public func jsonObject() -> JSONObject {
         switch self {
         case let .boolValue(v):                 return NSNumber(value: v)
         case let .numberValue(.intValue(v)):    return NSNumber(value: v)
         case let .numberValue(.floatValue(v)):  return NSNumber(value: v)
         case let .numberValue(.doubleValue(v)): return NSNumber(value: v)
         case let .stringValue(v):               return NSString(string: v)
-        case let .arrayValue(v):                return v.map{ $0.map { $0.toJSONObject() } ?? NSNull() } as NSArray
+        case let .arrayValue(v):                return v.map { $0.map { $0.jsonObject() } ?? NSNull() } as NSArray
         
         case let .dictionaryValue(v):
             var d: [String: Any] = [:]
             for (k, v) in v {
-                d[k] = v.map { $0.toJSONObject() } ?? NSNull()
+                d[k] = v.map { $0.jsonObject() } ?? NSNull()
             }
             return d as NSDictionary
         }

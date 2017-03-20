@@ -7,15 +7,15 @@
 //
 
 extension Int: JSONEncodable {
-    public var jsonValue: JSON {
+    public var json: JSON {
         return .numberValue(.intValue(self))
     }
 }
 
 extension Int: JSONDecodable {
     
-    public init?(jsonValue: JSON) {
-        switch jsonValue {
+    public init?(json: JSON) {
+        switch json {
         case let .numberValue(.intValue(v)):    self = v
         case let .numberValue(.floatValue(v)):  self = Int(v)
         case let .numberValue(.doubleValue(v)): self = Int(v)

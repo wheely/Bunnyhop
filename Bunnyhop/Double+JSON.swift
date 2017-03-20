@@ -7,15 +7,15 @@
 //
 
 extension Double: JSONEncodable {
-    public var jsonValue: JSON {
+    public var json: JSON {
         return .numberValue(.doubleValue(self))
     }
 }
 
 extension Double: JSONDecodable {
 
-    public init?(jsonValue: JSON) {
-        switch jsonValue {
+    public init?(json: JSON) {
+        switch json {
         case let .numberValue(.intValue(v)):    self = Double(v)
         case let .numberValue(.floatValue(v)):  self = Double(v)
         case let .numberValue(.doubleValue(v)): self = v
