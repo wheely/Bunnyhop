@@ -21,7 +21,7 @@ extension Double: JSONDecodable {
         case let .numberValue(.doubleValue(v)): self = v
 
         case let .stringValue(v):
-            if let v = v.scanDouble() {
+            if let v = Double(v) {
                 self = v
             } else {
                 return nil
@@ -30,19 +30,5 @@ extension Double: JSONDecodable {
         default:
             return nil
         }
-    }
-}
-
-
-// MARK: - Helpers
-
-private extension String {
-
-    func scanDouble() -> Double? {
-        var v: Double = 0
-        if Scanner(string: self).scanDouble(&v) {
-            return v
-        }
-        return nil
     }
 }

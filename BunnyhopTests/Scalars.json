@@ -1,7 +1,17 @@
 {
-    "string": "wat",
+    "string": "1wat1",
+    "string_bool": "true",
+    "string_integer": "69",
+    "string_decimal": "6.9",
+
     "integer": 69,
+    "integer_bool_true": 1,
+    "integer_bool_false": 0,
+
     "decimal": 6.9,
+    "decimal_bool_true": 1.0,
+    "decimal_bool_false": 0.0,
+
     "bool_true": true,
     "bool_false": false
 }

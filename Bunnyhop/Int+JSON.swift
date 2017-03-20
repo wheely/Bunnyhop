@@ -21,7 +21,7 @@ extension Int: JSONDecodable {
         case let .numberValue(.doubleValue(v)): self = Int(v)
 
         case let .stringValue(v):
-            if let v = v.scanInt() {
+            if let v = Double(v).map(Int.init) {
                 self = v
             } else {
                 return nil
@@ -30,18 +30,5 @@ extension Int: JSONDecodable {
         default:
             return nil
         }
-    }
-}
-
-
-// MARK: - Helpers
-
-private extension String {
-    func scanInt() -> Int? {
-        var v: Int = 0
-        if Scanner(string: self).scanInt(&v) {
-            return v
-        }
-        return nil
     }
 }

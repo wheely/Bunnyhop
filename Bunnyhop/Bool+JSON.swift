@@ -19,10 +19,25 @@ extension Bool: JSONDecodable {
         case let .boolValue(v): self = v
 
         // TODO: Research whether Number-to-Bool conversions are actually needed.
-        case let .numberValue(.intValue(v)):    self = Bool(v)
-        case let .numberValue(.floatValue(v)):  self = Bool(v)
-        case let .numberValue(.doubleValue(v)): self = Bool(v)
-            
+        case let .numberValue(.intValue(v)):
+            if let v = Bool(v) {
+                self = v
+            } else {
+                return nil
+            }
+        case let .numberValue(.floatValue(v)):
+            if let v = Bool(v) {
+                self = v
+            } else {
+                return nil
+            }
+        case let .numberValue(.doubleValue(v)):
+            if let v = Bool(v) {
+                self = v
+            } else {
+                return nil
+            }
+
         default: return nil
         }
     }
@@ -33,15 +48,36 @@ extension Bool: JSONDecodable {
 
 private extension Bool {
 
-    init(_ int: Int) {
-        self = int != 0
+    init?(_ int: Int) {
+        switch int {
+        case 0:
+            self = false
+        case 1:
+            self = true
+        default:
+            return nil
+        }
     }
 
-    init(_ float: Float) {
-        self = float != 0.0
+    init?(_ float: Float) {
+        switch float {
+        case 0.0:
+            self = false
+        case 1.0:
+            self = true
+        default:
+            return nil
+        }
     }
 
-    init(_ double: Double) {
-        self = double != 0.0
+    init?(_ double: Double) {
+        switch double {
+        case 0.0:
+            self = false
+        case 1.0:
+            self = true
+        default:
+            return nil
+        }
     }
 }

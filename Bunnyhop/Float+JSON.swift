@@ -21,7 +21,7 @@ extension Float: JSONDecodable {
         case let .numberValue(.doubleValue(v)): self = Float(v)
 
         case let .stringValue(v):
-            if let v = v.scanFloat() {
+            if let v = Float(v) {
                 self = v
             } else {
                 return nil
@@ -30,19 +30,5 @@ extension Float: JSONDecodable {
         default:
             return nil
         }
-    }
-}
-
-
-// MARK: - Helpers
-
-private extension String {
-
-    func scanFloat() -> Float? {
-        var v: Float = 0
-        if Scanner(string: self).scanFloat(&v) {
-            return v
-        }
-        return nil
     }
 }
