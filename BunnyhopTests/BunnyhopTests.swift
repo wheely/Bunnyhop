@@ -6,43 +6,25 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
-import UIKit
 import XCTest
-
 import Bunnyhop
 
 
 class BunnyhopTests: XCTestCase {
 
-    struct Bunny: JSONDecodable, JSONEncodable {
-        var name: String
-        var legCount: Int
-        
-        init(name: String, legCount: Int) {
-            self.name = name
-            self.legCount = legCount
-        }
-        
-        init?(JSONValue: JSON) {
-            if let name: String = JSONValue["name"]?.decode(),
-                   let legCount: Int = JSONValue["leg_count"]?.decode() {
-                self.init(name: name, legCount: legCount)
-            } else {
-                return nil
-            }
-        }
-        
-        var JSONValue: JSON {
-            return ["name": name, "leg_count": legCount]
-        }
+    func testReadingFromFile() {
+        let bunnyJSON = jsonFromFile(named: "Felix")!
+        let bunny = Bunny(jsonValue: bunnyJSON)!
+
+        XCTAssertEqual(bunny.name, "Felix", "The name is wrong")
+        XCTAssertEqual(bunny.numberOfLegs, 10, "Number of legs is wrong")
     }
-    
-    func testBackAndForth() {
-        let realBunny = Bunny(name: "bugz", legCount: 4)
-        let frozenBunny = JSON(realBunny)
-        let thawedBunny: Bunny = frozenBunny.decode()!
+
+    func testIdentity() {
+        let bunny = Bunny(name: "bugz", legCount: 4)
+        let convertedBunny: Bunny = JSON(bunny).decode()!
         
-        XCTAssertEqual(realBunny.name, thawedBunny.name, "names should be equal")
-        XCTAssertEqual(realBunny.legCount, thawedBunny.legCount, "legCounts should be equal")
+        XCTAssertEqual(bunny.name, convertedBunny.name, "Names should be equal")
+        XCTAssertEqual(bunny.numberOfLegs, convertedBunny.numberOfLegs, "Number of legs should be equal")
     }
 }
