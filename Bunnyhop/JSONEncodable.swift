@@ -11,7 +11,7 @@ public protocol JSONEncodable {
 }
 
 
-// MARK: - JSON+JSONEncodable
+// MARK: - JSON Conformance
 
 extension JSON: JSONEncodable {
     public var json: JSON {
@@ -20,7 +20,7 @@ extension JSON: JSONEncodable {
 }
 
 
-// MARK: - JSON initialization with JSONEncodable
+// MARK: - JSON Initialization With JSONEncodable
 
 extension JSON {
     
@@ -56,6 +56,3 @@ extension JSON: ExpressibleByDictionaryLiteral {
         self = .dictionaryValue(Dictionary(elements: elements.map { ($0, $1?.json) }))
     }
 }
-
-
-

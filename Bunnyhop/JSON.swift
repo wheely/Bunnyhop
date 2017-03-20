@@ -15,7 +15,7 @@ public enum JSON {
 }
 
 
-// MARK: Convenience
+// MARK: - Convenience
 
 public extension JSON {
 
@@ -91,7 +91,7 @@ extension JSON: Equatable {
 }
 
 
-// MARK: Literal Initializers
+// MARK: - Literal Initializers
 
 extension JSON: ExpressibleByBooleanLiteral {
     public init(booleanLiteral value: Bool) {
@@ -169,7 +169,7 @@ extension JSON: CustomDebugStringConvertible {
 }
 
 
-// MARK: - Bool to Number conversion
+// MARK: - Bool to Number Conversion
 
 extension Int {
     init(_ bool: Bool) {

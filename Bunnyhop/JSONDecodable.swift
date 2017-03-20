@@ -11,7 +11,7 @@ public protocol JSONDecodable {
 }
 
 
-// MARK: - JSON+JSONDecodable
+// MARK: - JSON Conformance
 
 extension JSON: JSONDecodable {
     public init?(json: JSON) {
@@ -20,7 +20,7 @@ extension JSON: JSONDecodable {
 }
 
 
-// MARK: - JSON decoding
+// MARK: - JSON Decoding
 
 extension JSON {
 
