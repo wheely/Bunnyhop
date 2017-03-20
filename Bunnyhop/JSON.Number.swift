@@ -20,21 +20,31 @@ extension JSON {
 
 extension JSON.Number: Equatable {
 
+    private static var decimalComparissonPrecision: Double {
+        return 10e-6 // 0.000001
+    }
+
+    private static func areEqualWithPrecision(_ lhs: Double, _ rhs: Double) -> Bool {
+        return abs(lhs - rhs) < decimalComparissonPrecision
+    }
+
+    private static func areEqualWithPrecision(_ lhs: Float, _ rhs: Float) -> Bool {
+        return abs(lhs - rhs) < Float(decimalComparissonPrecision)
+    }
+
     public static func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
         switch (lhs, rhs) {
-        case let (.intValue(l),    .intValue(r))    where l == r:         return true
-        case let (.intValue(l),    .floatValue(r))  where Float(l) == r:  return true
-        case let (.intValue(l),    .doubleValue(r)) where Double(l) == r: return true
+        case let (.intValue(l),    .intValue(r)):    return l == r
+        case let (.intValue(l),    .floatValue(r)):  return areEqualWithPrecision(Float(l), r)
+        case let (.intValue(l),    .doubleValue(r)): return areEqualWithPrecision(Double(l), r)
 
-        case let (.floatValue(l),  .intValue(r))    where l == Float(r):  return true
-        case let (.floatValue(l),  .floatValue(r))  where l == r:         return true
-        case let (.floatValue(l),  .doubleValue(r)) where Double(l) == r: return true
+        case let (.floatValue(l),  .intValue(r)):    return areEqualWithPrecision(l, Float(r))
+        case let (.floatValue(l),  .floatValue(r)):  return areEqualWithPrecision(l, r)
+        case let (.floatValue(l),  .doubleValue(r)): return areEqualWithPrecision(Double(l), r)
 
-        case let (.doubleValue(l), .intValue(r))    where l == Double(r): return true
-        case let (.doubleValue(l), .floatValue(r))  where l == Double(r): return true
-        case let (.doubleValue(l), .doubleValue(r)) where l == r:         return true
-            
-        default: return false
+        case let (.doubleValue(l), .intValue(r)):    return areEqualWithPrecision(l, Double(r))
+        case let (.doubleValue(l), .floatValue(r)):  return areEqualWithPrecision(l, Double(r))
+        case let (.doubleValue(l), .doubleValue(r)): return areEqualWithPrecision(l, r)
         }
     }
 }

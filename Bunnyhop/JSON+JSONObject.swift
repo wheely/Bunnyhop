@@ -12,45 +12,22 @@ public typealias JSONObject = Any
 public extension JSON {
 
     init?(jsonObject: JSONObject) {
-        var json: JSON?
-
         switch jsonObject {
 
-        case let a as NSNumber:
-            switch CFNumberGetType(a as CFNumber) {
-            case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type,
-                 .charType, .shortType, .intType, .longType, .longLongType,
-                 .cfIndexType, .nsIntegerType:
-                json = a.intValue.json
-            case .float32Type, .float64Type, .floatType, .cgFloatType:
-                json = a.floatValue.json
-            case .doubleType:
-                json = a.doubleValue.json
-            }
+        case let nsNumber as NSNumber:
+            self = nsNumber.json
 
-        case let value as String:
-            json = .stringValue(value)
+        case let string as String:
+            self = .stringValue(string)
 
-        case let value as [Any]:
-            json = .arrayValue(value.map { JSON(jsonObject: $0) })
+        case let array as [Any]:
+            self = .arrayValue(array.map { JSON(jsonObject: $0) })
 
-        case let value as [String: Any]:
-            var d: [String: JSON?] = [:]
-            for (k, v) in value {
-                d[k] = JSON(jsonObject: v)
-            }
-            json = .dictionaryValue(d)
+        case let dictionary as [String: Any]:
+            self = .dictionaryValue(Dictionary(elements: dictionary.map { ($0, JSON(jsonObject: $1)) }))
 
-        case is NSNull:
-            break
-
+        case is NSNull: fallthrough
         default:
-            break
-        }
-
-        if let json = json {
-            self = json
-        } else {
             return nil
         }
     }
@@ -62,14 +39,29 @@ public extension JSON {
         case let .numberValue(.floatValue(v)):  return NSNumber(value: v)
         case let .numberValue(.doubleValue(v)): return NSNumber(value: v)
         case let .stringValue(v):               return NSString(string: v)
-        case let .arrayValue(v):                return v.map { $0.map { $0.jsonObject() } ?? NSNull() } as NSArray
+        case let .arrayValue(v):                return v.map { $0?.jsonObject() ?? NSNull() }
         
         case let .dictionaryValue(v):
-            var d: [String: Any] = [:]
-            for (k, v) in v {
-                d[k] = v.map { $0.jsonObject() } ?? NSNull()
-            }
-            return d as NSDictionary
+            return Dictionary(elements: v.map { ($0, $1?.jsonObject() ?? NSNull()) })
+        }
+    }
+}
+
+
+// MARK: - Helpers
+
+private extension NSNumber {
+
+    var json: JSON {
+        switch CFNumberGetType(self as CFNumber) {
+        case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type,
+             .charType, .shortType, .intType, .longType, .longLongType,
+             .cfIndexType, .nsIntegerType:
+            return intValue.json
+        case .float32Type, .float64Type, .floatType, .cgFloatType:
+            return floatValue.json
+        case .doubleType:
+            return doubleValue.json
         }
     }
 }
