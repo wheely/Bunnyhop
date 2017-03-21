@@ -15,10 +15,9 @@ extension String: JSONEncodable {
 extension String: JSONDecodable {
 
     public init?(json: JSON) {
-        switch json {
-        case let .stringValue(v):
-            self = v
-        default:
+        if case let .stringValue(string) = json {
+            self = string
+        } else {
             return nil
         }
     }

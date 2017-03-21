@@ -19,8 +19,8 @@ extension CGFloat: JSONEncodable {
 extension CGFloat: JSONDecodable {
 
     public init?(json: JSON) {
-        if let value: Double = json.decode() {
-            self.init(value)
+        if let double: Double = json.decode() {
+            self.init(double)
         } else {
             return nil
         }

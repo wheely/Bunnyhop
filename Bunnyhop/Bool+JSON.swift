@@ -16,7 +16,7 @@ extension Bool: JSONDecodable {
     
     public init?(json: JSON) {
         switch json {
-        case let .boolValue(v): self = v
+        case let .boolValue(bool): self = bool
 
         // TODO: Research whether Number-to-Bool conversions are actually needed.
         case let .numberValue(.intValue(v)):

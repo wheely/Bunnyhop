@@ -16,13 +16,13 @@ extension Float: JSONDecodable {
     
     public init?(json: JSON) {
         switch json {
-        case let .numberValue(.intValue(v)):    self = Float(v)
-        case let .numberValue(.floatValue(v)):  self = v
-        case let .numberValue(.doubleValue(v)): self = Float(v)
+        case let .numberValue(.intValue(int)):       self = Float(int)
+        case let .numberValue(.floatValue(float)):   self = float
+        case let .numberValue(.doubleValue(double)): self = Float(double)
 
-        case let .stringValue(v):
-            if let v = Float(v) {
-                self = v
+        case let .stringValue(string):
+            if let float = Float(string) {
+                self = float
             } else {
                 return nil
             }

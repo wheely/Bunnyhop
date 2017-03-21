@@ -20,16 +20,15 @@ public enum JSON {
 public extension JSON {
 
     public var arrayValue: [JSON?]? {
-        switch self {
-        case let .arrayValue(v):
-            return v
-        default:
+        if case let .arrayValue(array) = self {
+            return array
+        } else {
             return nil
         }
     }
 
     public subscript (index: Int) -> JSON? {
-        if let array = arrayValue, index <= array.endIndex {
+        if let array = arrayValue, array.indices.contains(index) {
             return array[index]
         } else {
             return nil
@@ -37,10 +36,9 @@ public extension JSON {
     }
 
     public var dictionaryValue: [String: JSON?]? {
-        switch self {
-        case let .dictionaryValue(v):
-            return v
-        default:
+        if case let .dictionaryValue(dictionary) = self {
+            return dictionary
+        } else {
             return nil
         }
     }
@@ -136,16 +134,26 @@ extension JSON: CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case let .boolValue(v):
-            return v.description
-        case let .numberValue(v):
-            return v.description
-        case let .stringValue(v):
-            return v
-        case let .arrayValue(v):
-            return "[" + v.map { $0?.description ?? "nil" }.joined(separator: ", ") + "]"
-        case let .dictionaryValue(v):
-            return "[" + v.map { "\($0.0): " + ($0.1?.description ?? "nil") }.joined(separator: ", ") + "]"
+        case let .boolValue(bool):
+            return bool.description
+        case let .numberValue(number):
+            return number.description
+        case let .stringValue(string):
+            return string
+
+        case let .arrayValue(array):
+            return "["
+                + array
+                    .map { $0?.description ?? "nil" }
+                    .joined(separator: ", ")
+                + "]"
+
+        case let .dictionaryValue(dictionary):
+            return "["
+                + dictionary
+                    .map { "\($0): " + ($1?.description ?? "nil") }
+                    .joined(separator: ", ")
+                + "]"
         }
     }
 }
@@ -154,16 +162,26 @@ extension JSON: CustomDebugStringConvertible {
     
     public var debugDescription: String {
         switch self {
-        case let .boolValue(v):
-            return v.description
-        case let .numberValue(v):
-            return v.description
-        case let .stringValue(v):
-            return v.debugDescription
-        case let .arrayValue(v):
-            return "[" + v.map { $0.debugDescription }.joined(separator: ", ") + "]"
-        case let .dictionaryValue(v):
-            return "[" + v.map { "\($0.0.debugDescription): \($0.1.debugDescription)" }.joined(separator: ", ") + "]"
+        case let .boolValue(bool):
+            return bool.description
+        case let .numberValue(number):
+            return number.description
+        case let .stringValue(string):
+            return string.debugDescription
+
+        case let .arrayValue(array):
+            return "["
+                + array
+                    .map { $0.debugDescription }
+                    .joined(separator: ", ")
+                + "]"
+
+        case let .dictionaryValue(dictionary):
+            return "["
+                + dictionary
+                    .map { "\($0.debugDescription): \($1.debugDescription)" }
+                    .joined(separator: ", ")
+                + "]"
         }
     }
 }

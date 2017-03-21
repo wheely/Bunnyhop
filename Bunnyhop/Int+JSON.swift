@@ -16,13 +16,14 @@ extension Int: JSONDecodable {
     
     public init?(json: JSON) {
         switch json {
-        case let .numberValue(.intValue(v)):    self = v
-        case let .numberValue(.floatValue(v)):  self = Int(v)
-        case let .numberValue(.doubleValue(v)): self = Int(v)
+        case let .numberValue(.intValue(int)):       self = int
+        case let .numberValue(.floatValue(float)):   self = Int(float)
+        case let .numberValue(.doubleValue(doblle)): self = Int(doblle)
 
-        case let .stringValue(v):
-            if let v = Double(v).map(Int.init) {
-                self = v
+        case let .stringValue(string):
+            // Casting to double first so we can recover integers from decimal strings.
+            if let int = Double(string).map(Int.init) {
+                self = int
             } else {
                 return nil
             }

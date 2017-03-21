@@ -16,13 +16,13 @@ extension Double: JSONDecodable {
 
     public init?(json: JSON) {
         switch json {
-        case let .numberValue(.intValue(v)):    self = Double(v)
-        case let .numberValue(.floatValue(v)):  self = Double(v)
-        case let .numberValue(.doubleValue(v)): self = v
+        case let .numberValue(.intValue(int)):       self = Double(int)
+        case let .numberValue(.floatValue(float)):   self = Double(float)
+        case let .numberValue(.doubleValue(double)): self = double
 
-        case let .stringValue(v):
-            if let v = Double(v) {
-                self = v
+        case let .stringValue(string):
+            if let double = Double(string) {
+                self = double
             } else {
                 return nil
             }

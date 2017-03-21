@@ -21,7 +21,7 @@ extension JSON {
 extension JSON.Number: Equatable {
 
     private static var decimalComparissonPrecision: Double {
-        return 10e-6 // 0.000001
+        return 10e-6 // 0.000_001
     }
 
     private static func areEqualWithPrecision(_ lhs: Double, _ rhs: Double) -> Bool {
@@ -56,9 +56,9 @@ extension JSON.Number: CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case let .intValue(v): return v.description
-        case let .floatValue(v): return v.description
-        case let .doubleValue(v): return v.description
+        case let .intValue(int): return int.description
+        case let .floatValue(float): return float.description
+        case let .doubleValue(double): return double.description
         }
     }
 }
