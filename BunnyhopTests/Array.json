@@ -1,0 +1,24 @@
+[
+    null,
+    "wat",
+    69,
+    6.9,
+    true,
+    false,
+    [
+        null,
+        "wat",
+        69,
+        6.9,
+        true,
+        false
+    ],
+    {
+        "null": null,
+        "string": "wat",
+        "integer": 69,
+        "decimal": 6.9,
+        "bool_true": true,
+        "bool_false": false
+    }
+]
