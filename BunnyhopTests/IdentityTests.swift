@@ -47,7 +47,7 @@ class IdentityTests: XCTestCase {
         ]
 
         let json = JSON(jsonDictionary)
-        let jsonObject = json.jsonObject()
+        let jsonObject = json.jsonObject
         let data = try! JSONSerialization.data(withJSONObject: jsonObject, options: [])
 
         let recoveredJSONObject = try! JSONSerialization.jsonObject(with: data, options: [])
