@@ -54,28 +54,6 @@ public extension JSON {
             return nil
         }
     }
-
-//    init?(jsonObject: JSONObject) {
-//        switch jsonObject {
-//
-//        case let double as Double: self = .numberValue(.doubleValue(double))
-//
-//        case let float as Float:   self = .numberValue(.floatValue(float))
-//        case let bool as Bool:     self = .boolValue(bool)
-//        case let string as String: self = .stringValue(string)
-//
-//        case let int as Int:       self = .numberValue(.intValue(int))
-//
-//        case let array as [JSONObject]:
-//            self = .arrayValue(array.map { JSON(jsonObject: $0) })
-//
-//        case let dictionary as [String: JSONObject]:
-//            self = .dictionaryValue(Dictionary(elements: dictionary.map { ($0, JSON(jsonObject: $1)) }))
-//            
-//        default:
-//            return nil
-//        }
-//    }
 }
 
 

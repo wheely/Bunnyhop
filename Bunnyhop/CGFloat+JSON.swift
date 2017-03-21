@@ -10,7 +10,6 @@ import UIKit
 
 
 extension CGFloat: JSONEncodable {
-    
     public var json: JSON {
         return .numberValue(.doubleValue(Double(self)))
     }
