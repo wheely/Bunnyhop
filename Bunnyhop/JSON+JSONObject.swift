@@ -23,15 +23,15 @@ public extension JSON {
 
     public var jsonObject: JSONObject {
         switch self {
-        case let .boolValue(bool):                   return NSNumber(value: bool)
-        case let .numberValue(.intValue(int)):       return NSNumber(value: int)
-        case let .numberValue(.floatValue(float)):   return NSNumber(value: float)
-        case let .numberValue(.doubleValue(double)): return NSNumber(value: double)
-        case let .stringValue(string):               return NSString(string: string)
-        case let .arrayValue(array):                 return array.map { $0?.jsonObject ?? NSNull() }
+        case let .boolValue(bool):                   return bool
+        case let .numberValue(.intValue(int)):       return int
+        case let .numberValue(.floatValue(float)):   return float
+        case let .numberValue(.doubleValue(double)): return double
+        case let .stringValue(string):               return string
+        case let .arrayValue(array):                 return array.map { $0?.jsonObject }
 
         case let .dictionaryValue(dictionary):
-            return Dictionary(elements: dictionary.map { ($0, $1?.jsonObject ?? NSNull()) })
+            return Dictionary(elements: dictionary.map { ($0, $1?.jsonObject) })
         }
     }
 
@@ -41,20 +41,41 @@ public extension JSON {
         case let nsNumber as NSNumber:
             self = nsNumber.json
 
-        case let string as String: // casts from NSString
+        case let string as String:
             self = .stringValue(string)
 
-        case let array as [JSONObject]: // casts from NSArray
+        case let array as [JSONObject]:
             self = .arrayValue(array.map { JSON(jsonObject: $0) })
 
-        case let dictionary as [String: JSONObject]: // casts from NSDictionary
+        case let dictionary as [String: JSONObject]:
             self = .dictionaryValue(Dictionary(elements: dictionary.map { ($0, JSON(jsonObject: $1)) }))
 
-        case is NSNull: fallthrough
         default:
             return nil
         }
     }
+
+//    init?(jsonObject: JSONObject) {
+//        switch jsonObject {
+//
+//        case let double as Double: self = .numberValue(.doubleValue(double))
+//
+//        case let float as Float:   self = .numberValue(.floatValue(float))
+//        case let bool as Bool:     self = .boolValue(bool)
+//        case let string as String: self = .stringValue(string)
+//
+//        case let int as Int:       self = .numberValue(.intValue(int))
+//
+//        case let array as [JSONObject]:
+//            self = .arrayValue(array.map { JSON(jsonObject: $0) })
+//
+//        case let dictionary as [String: JSONObject]:
+//            self = .dictionaryValue(Dictionary(elements: dictionary.map { ($0, JSON(jsonObject: $1)) }))
+//            
+//        default:
+//            return nil
+//        }
+//    }
 }
 
 
@@ -64,8 +85,10 @@ private extension NSNumber {
 
     var json: JSON {
         switch CFNumberGetType(self as CFNumber) {
+        case .charType:
+            return boolValue.json
         case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type,
-             .charType, .shortType, .intType, .longType, .longLongType,
+             .shortType, .intType, .longType, .longLongType,
              .cfIndexType, .nsIntegerType:
             return intValue.json
         case .float32Type, .float64Type, .floatType, .cgFloatType:

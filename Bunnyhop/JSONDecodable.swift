@@ -42,7 +42,7 @@ extension JSON {
 
     public func decode<V: JSONDecodable>() -> [String: V?]? {
         if let dictionaryValue = dictionaryValue {
-            return Dictionary(elements: dictionaryValue.map { ($0, $1.flatMap { V(json: $0) }) })
+            return Dictionary(elements: dictionaryValue.map { ($0, $1.flatMap(V.init(json:))) })
         } else {
             return nil
         }
@@ -51,10 +51,11 @@ extension JSON {
     public func decode<V: JSONDecodable>() -> [String: V]? {
         if let dictionaryValue = dictionaryValue {
             return Dictionary(elements:
-                dictionaryValue
-                    .map { ($0, $1.flatMap { V(json: $0) }) }
-                    .filter { $1 != nil }
-                    .map { ($0, $1!) }
+                dictionaryValue.flatMap { (key, value) in
+                    value
+                        .flatMap(V.init(json:))
+                        .map { (key, $0) }
+                }
             )
         } else {
             return nil

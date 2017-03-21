@@ -55,31 +55,12 @@ extension JSON: Equatable {
 
     public static func ==(lhs: JSON, rhs: JSON) -> Bool {
         switch (lhs, rhs) {
-        case let (.boolValue(l), .boolValue(r)):
-            return l == r
-        case let (.numberValue(l), .numberValue(r)):
-            return l == r
-
-        // TODO: Research whether Bool-to-Number conversions are actually needed.
-        case let (.boolValue(l), .numberValue(.intValue(r))):
-            return Int(l) == r
-        case let (.boolValue(l), .numberValue(.floatValue(r))):
-            return Float(l) == r
-        case let (.boolValue(l), .numberValue(.doubleValue(r))):
-            return Double(l) == r
-        case let (.numberValue(.intValue(l)),    .boolValue(r)):
-            return l == Int(r)
-        case let (.numberValue(.floatValue(l)),  .boolValue(r)):
-            return l == Float(r)
-        case let (.numberValue(.doubleValue(l)), .boolValue(r)):
-            return l == Double(r)
-
-        case let (.stringValue(l), .stringValue(r)):
-            return l == r
+        case let (.boolValue(l), .boolValue(r)):     return l == r
+        case let (.numberValue(l), .numberValue(r)): return l == r
+        case let (.stringValue(l), .stringValue(r)): return l == r
 
         case let (.arrayValue(l), .arrayValue(r)):
             return l.elementsEqual(r, by: ==)
-
         case let (.dictionaryValue(l), .dictionaryValue(r)):
             return l.elementsEqual(r) { $0.key == $1.key && $0.value == $1.value }
             
@@ -185,25 +166,3 @@ extension JSON: CustomDebugStringConvertible {
         }
     }
 }
-
-
-// MARK: - Bool to Number Conversion
-
-extension Int {
-    init(_ bool: Bool) {
-        self = bool ? 1 : 0
-    }
-}
-
-extension Float {
-    init(_ bool: Bool) {
-        self = bool ? 1.0 : 0.0
-    }
-}
-
-extension Double {
-    init(_ bool: Bool) {
-        self = bool ? 1.0 : 0.0
-    }
-}
-
