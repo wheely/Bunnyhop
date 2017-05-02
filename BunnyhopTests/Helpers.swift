@@ -18,7 +18,7 @@ func jsonFromFile(named fileName: String) -> JSON? {
     return JSON(jsonObject: jsonObject)
 }
 
-/// Convenience extension for accessing WheelyUI bundle.
+/// Convenience extension for accessing BunnyhopTests bundle.
 extension Bundle {
 
     private static let bundleIdentifier = "com.wheely.BunnyhopTests"
