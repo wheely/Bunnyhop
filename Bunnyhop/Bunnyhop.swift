@@ -6,89 +6,110 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
-import Foundation
-
-
-public enum JSON: Equatable {
-    public enum Number: Equatable {
-        case IntValue(Int)
-        case FloatValue(Float)
-        case DoubleValue(Double)
-    }
-    
-    case BoolValue(Bool)
-    case NumberValue(Number)
-    case StringValue(String)
-    case ArrayValue([JSON?])
-    case DictionaryValue([String: JSON?])
+public enum JSON {
+    case boolValue(Bool)
+    case numberValue(Number)
+    case stringValue(String)
+    case arrayValue([JSON?])
+    case dictionaryValue([String: JSON?])
 }
 
-
-public func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
-    switch (lhs, rhs) {
-    case let (.IntValue(l),    .IntValue(r))    where l == r:         return true
-    case let (.IntValue(l),    .FloatValue(r))  where Float(l) == r:  return true
-    case let (.IntValue(l),    .DoubleValue(r)) where Double(l) == r: return true
-    
-    case let (.FloatValue(l),  .IntValue(r))    where l == Float(r):  return true
-    case let (.FloatValue(l),  .FloatValue(r))  where l == r:         return true
-    case let (.FloatValue(l),  .DoubleValue(r)) where Double(l) == r: return true
-    
-    case let (.DoubleValue(l), .IntValue(r))    where l == Double(r): return true
-    case let (.DoubleValue(l), .FloatValue(r))  where l == Double(r): return true
-    case let (.DoubleValue(l), .DoubleValue(r)) where l == r:         return true
-        
-    default: return false
+extension JSON {
+    public enum Number {
+        case intValue(Int)
+        case floatValue(Float)
+        case doubleValue(Double)
     }
 }
 
 
-public func ==(lhs: JSON, rhs: JSON) -> Bool {
-    switch (lhs, rhs) {
-    case let (.BoolValue(l), .BoolValue(r))                 where l == r:          return true
-    case let (.BoolValue(l), .NumberValue(.IntValue(r)))    where Int(l) == r:     return true
-    case let (.BoolValue(l), .NumberValue(.FloatValue(r)))  where Float(l) == r:   return true
-    case let (.BoolValue(l), .NumberValue(.DoubleValue(r))) where Double(l) == r:  return true
-    case let (.NumberValue(.IntValue(l)),    .BoolValue(r)) where l == Int(r):     return true
-    case let (.NumberValue(.FloatValue(l)),  .BoolValue(r)) where l == Float(r):   return true
-    case let (.NumberValue(.DoubleValue(l)), .BoolValue(r)) where l == Double(r):  return true
+// MARK: - Equatable
 
-    case let (.NumberValue(l),     .NumberValue(r))         where l == r:          return true
-    case let (.StringValue(l),     .StringValue(r))         where l == r:          return true
-    case let (.ArrayValue(l),      .ArrayValue(r))          where l.elementsEqual(r, isEquivalent: ==): return true
-    case let (.DictionaryValue(l), .DictionaryValue(r))     where l.elementsEqual(r) { $0.0 == $1.0 && $0.1 == $1.1 }: return true
-    
-    default: return false
+extension JSON.Number: Equatable {
+
+    private static var decimalComparissonPrecision: Double {
+        return 10e-6 // 0.000_001
+    }
+
+    private static func areEqualWithPrecision(_ lhs: Double, _ rhs: Double) -> Bool {
+        return abs(lhs - rhs) < decimalComparissonPrecision
+    }
+
+    private static func areEqualWithPrecision(_ lhs: Float, _ rhs: Float) -> Bool {
+        return abs(lhs - rhs) < Float(decimalComparissonPrecision)
+    }
+
+    public static func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
+        switch (lhs, rhs) {
+        case let (.intValue(l),    .intValue(r)):    return l == r
+        case let (.intValue(l),    .floatValue(r)):  return areEqualWithPrecision(Float(l), r)
+        case let (.intValue(l),    .doubleValue(r)): return areEqualWithPrecision(Double(l), r)
+
+        case let (.floatValue(l),  .intValue(r)):    return areEqualWithPrecision(l, Float(r))
+        case let (.floatValue(l),  .floatValue(r)):  return areEqualWithPrecision(l, r)
+        case let (.floatValue(l),  .doubleValue(r)): return areEqualWithPrecision(Double(l), r)
+
+        case let (.doubleValue(l), .intValue(r)):    return areEqualWithPrecision(l, Double(r))
+        case let (.doubleValue(l), .floatValue(r)):  return areEqualWithPrecision(l, Double(r))
+        case let (.doubleValue(l), .doubleValue(r)): return areEqualWithPrecision(l, r)
+        }
+    }
+}
+
+extension JSON: Equatable {
+
+    public static func ==(lhs: JSON, rhs: JSON) -> Bool {
+        switch (lhs, rhs) {
+        case let (.boolValue(l), .boolValue(r)):     return l == r
+        case let (.numberValue(l), .numberValue(r)): return l == r
+        case let (.stringValue(l), .stringValue(r)): return l == r
+
+        case let (.arrayValue(l), .arrayValue(r)):
+            return l.elementsEqual(r, by: ==)
+        case let (.dictionaryValue(l), .dictionaryValue(r)):
+            return l.elementsEqual(r) { $0.key == $1.key && $0.value == $1.value }
+
+        default: return false
+        }
     }
 }
 
 
-// MARK: - LiteralConvertible Initializers
+// MARK: - Literal Initializers
 
-extension JSON: BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiteralConvertible,
-    UnicodeScalarLiteralConvertible, ExtendedGraphemeClusterLiteralConvertible, StringLiteralConvertible {
+extension JSON: ExpressibleByBooleanLiteral {
     public init(booleanLiteral value: Bool) {
-        self = .BoolValue(value)
+        self = .boolValue(value)
     }
-    
+}
+
+extension JSON: ExpressibleByIntegerLiteral {
     public init(integerLiteral value: Int) {
-        self = .NumberValue(Number.IntValue(value))
+        self = .numberValue(Number.intValue(value))
     }
-    
+}
+
+extension JSON: ExpressibleByFloatLiteral {
     public init(floatLiteral value: Float) {
-        self = .NumberValue(Number.FloatValue(value))
+        self = .numberValue(Number.floatValue(value))
     }
-    
-    public init(unicodeScalarLiteral value: String) {
-        self = .StringValue(value)
-    }
-    
-    public init(extendedGraphemeClusterLiteral value: String) {
-        self = .StringValue(value)
-    }
-    
+}
+
+extension JSON: ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
-        self = .StringValue(value)
+        self = .stringValue(value)
+    }
+}
+
+extension JSON: ExpressibleByUnicodeScalarLiteral {
+    public init(unicodeScalarLiteral value: String) {
+        self = .stringValue(value)
+    }
+}
+
+extension JSON: ExpressibleByExtendedGraphemeClusterLiteral {
+    public init(extendedGraphemeClusterLiteral value: String) {
+        self = .stringValue(value)
     }
 }
 
@@ -96,46 +117,46 @@ extension JSON: BooleanLiteralConvertible, IntegerLiteralConvertible, FloatLiter
 // MARK: - Encoding
 
 public protocol JSONEncodable {
-    var JSONValue: JSON { get }
+    var jsonValue: JSON { get }
 }
 
 extension JSON {
     public init<T: JSONEncodable>(_ value: T) {
-        self = value.JSONValue
+        self = value.jsonValue
     }
     
     public init<T: JSONEncodable>(_ value: [T]) {
-        self = .ArrayValue(value.map { .Some($0.JSONValue) })
+        self = .arrayValue(value.map { .some($0.jsonValue) })
     }
 
     public init<T: JSONEncodable>(_ value: [T?]) {
-        self = .ArrayValue(value.map { $0.map{ $0.JSONValue } })
+        self = .arrayValue(value.map { $0.map{ $0.jsonValue } })
     }
     
     public init(_ value: [JSONEncodable?]) {
-        self = .ArrayValue(value.map { $0.map{ $0.JSONValue } })
+        self = .arrayValue(value.map { $0.map{ $0.jsonValue } })
     }
     
     public init<T: JSONEncodable>(_ value: [String: T]) {
-        self = .DictionaryValue(Dictionary(elements: value.map { ($0, .Some($1.JSONValue)) }))
+        self = .dictionaryValue(Dictionary(elements: value.map { ($0, .some($1.jsonValue)) }))
     }
     
     public init<T: JSONEncodable>(_ value: [String: T?]) {
-        self = .DictionaryValue(Dictionary(elements: value.map { ($0, $1.map { $0.JSONValue }) }))
+        self = .dictionaryValue(Dictionary(elements: value.map { ($0, $1.map { $0.jsonValue }) }))
     }
     
     public init(_ value: [String: JSONEncodable?]) {
-        self = .DictionaryValue(Dictionary(elements: value.map { ($0, $1.map { $0.JSONValue }) }))
+        self = .dictionaryValue(Dictionary(elements: value.map { ($0, $1.map { $0.jsonValue }) }))
     }
 }
 
-extension JSON: ArrayLiteralConvertible, DictionaryLiteralConvertible {
+extension JSON: ExpressibleByArrayLiteral, ExpressibleByDictionaryLiteral {
     public init(arrayLiteral elements: JSONEncodable?...) {
-        self = .ArrayValue(elements.map { $0.map { $0.JSONValue } })
+        self = .arrayValue(elements.map { $0.map { $0.jsonValue } })
     }
 
     public init(dictionaryLiteral elements: (String, JSONEncodable?)...) {
-        self = .DictionaryValue(Dictionary(elements: elements.map { ($0, $1.map { $0.JSONValue }) } ))
+        self = .dictionaryValue(Dictionary(elements: elements.map { ($0, $1.map { $0.jsonValue }) } ))
     }
 }
 
@@ -143,36 +164,36 @@ extension JSON: ArrayLiteralConvertible, DictionaryLiteralConvertible {
 // MARK: - Decoding
 
 public protocol JSONDecodable {
-    init(JSONValue: JSON) throws
+    init(jsonValue: JSON) throws
 }
 
 public protocol JSONDecoder {
     func decode() throws -> JSON?
-    func wrapError(error: JSON.Error) -> JSON.Error
+    func wrapError(_ error: JSON.DecodingError) -> JSON.DecodingError
 }
 
 extension JSON {
-    public indirect enum Error: ErrorType {
-        case TypeMismatch(whileDecoding: Any.Type, from: JSON) // Expecting different type of JSON value
-        case MissingValue            // Trying to decode Optional<JSON>.None to some non-optional JSONDecodable type
-        case ContansNilElement       // Trying to decode [JSON?] or [String: JSON?] which contains nil into [JSONDecodable] or [String: JSONDecodable]
-        case KeyError(String, Error) // Error when decoding value for specific key in .DictionaryValue
+    public enum DecodingError: Error {
+        case typeMismatch(whileDecoding: Any.Type, from: JSON) // Expecting different type of JSON value
+        case missingValue            // Trying to decode Optional<JSON>.None to some non-optional JSONDecodable type
+        case contansNilElement       // Trying to decode [JSON?] or [String: JSON?] which contains nil into [JSONDecodable] or [String: JSONDecodable]
+        indirect case keyError(String, DecodingError) // Error when decoding value for specific key in .DictionaryValue
     }
 }
 
-extension JSON.Error: CustomStringConvertible, CustomDebugStringConvertible {
+extension JSON.DecodingError: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
-        case let .TypeMismatch(type, JSONValue):
-            return "Can't initialize \(type) with \(JSONValue.debugDescription)"
-        case .MissingValue:
+        case let .typeMismatch(type, jsonValue):
+            return "Can't initialize \(type) with \(jsonValue.debugDescription)"
+        case .missingValue:
             return "Missing value"
-        case .ContansNilElement:
+        case .contansNilElement:
             return "Contains nil element"
-        case var .KeyError(key, error):
+        case var .keyError(key, error):
             while true {
                 switch error {
-                case let .KeyError(thisKey, thisError):
+                case let .keyError(thisKey, thisError):
                     key = "\(thisKey).\(key)"
                     error = thisError
                 default:
@@ -184,47 +205,47 @@ extension JSON.Error: CustomStringConvertible, CustomDebugStringConvertible {
     
     public var debugDescription: String {
         switch self {
-            case .TypeMismatch: return "{TypeMismatch}"
-            case .MissingValue: return "{MissingValue}"
-            case .ContansNilElement: return "{ContansNilElement}"
-            case let .KeyError(key, error): return "{KeyError(key: \"\(key)\", error: \(error.debugDescription))}"
+            case .typeMismatch: return "{TypeMismatch}"
+            case .missingValue: return "{MissingValue}"
+            case .contansNilElement: return "{ContansNilElement}"
+            case let .keyError(key, error): return "{KeyError(key: \"\(key)\", error: \(error.debugDescription))}"
         }
     }
 }
 
 extension JSONDecoder {
     public func decode() throws -> JSON {
-        guard let JSONValue: JSON = try decode() else {
-            throw wrapError(.MissingValue)
+        guard let jsonValue: JSON = try decode() else {
+            throw wrapError(.missingValue)
         }
-        return JSONValue
+        return jsonValue
     }
     
 
     // MARK: Decoding Non-Optionals
     
     public func decode<T: JSONDecodable>() throws -> T {
-        let JSONValue: JSON = try decode()
+        let jsonValue: JSON = try decode()
         do {
-            return try T(JSONValue: JSONValue)
-        } catch let error as JSON.Error {
+            return try T(jsonValue: jsonValue)
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.Error) throws -> T?)? = nil) throws -> [T?] {
-        let JSONValue: JSON = try decode()
-        guard case let .ArrayValue(arrayValue) = JSONValue else {
-            throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [T?].self, from: JSONValue))
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.DecodingError) throws -> T?)? = nil) throws -> [T?] {
+        let jsonValue: JSON = try decode()
+        guard case let .arrayValue(arrayValue) = jsonValue else {
+            throw wrapError(JSON.DecodingError.typeMismatch(whileDecoding: [T?].self, from: jsonValue))
         }
         do {
             if let recoverer = recoverer {
                 return try arrayValue.map {
-                    if let JSONValue = $0 {
+                    if let jsonValue = $0 {
                         do {
-                            return try JSONValue.decode()
-                        } catch let error as JSON.Error {
-                            return try recoverer(JSONValue, error)
+                            return try jsonValue.decode()
+                        } catch let error as JSON.DecodingError {
+                            return try recoverer(jsonValue, error)
                         }
                     } else {
                         return nil
@@ -233,98 +254,100 @@ extension JSONDecoder {
             } else {
                 return try arrayValue.map { try $0.map { try $0.decode() } }
             }
-        } catch let error as JSON.Error {
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.Error) throws -> T?)? = nil) throws -> [T] {
-        let JSONValue: JSON = try decode()
-        guard case let .ArrayValue(arrayValue) = JSONValue else {
-            throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [T].self, from: JSONValue))
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.DecodingError) throws -> T?)? = nil) throws -> [T] {
+        let jsonValue: JSON = try decode()
+        guard case let .arrayValue(arrayValue) = jsonValue else {
+            throw wrapError(JSON.DecodingError.typeMismatch(whileDecoding: [T].self, from: jsonValue))
         }
         do {
             if let recoverer = recoverer {
-                return try arrayValue.reduce([]) { (var elements, JSONValue) in
-                    if let JSONValue = JSONValue {
+                return try arrayValue.reduce([]) { (elements, jsonValue) in
+                    var elements = elements
+                    if let jsonValue = jsonValue {
                         do {
-                            elements.append(try JSONValue.decode())
-                        } catch let error as JSON.Error {
-                            if let recoveredValue = try recoverer(JSONValue, error) {
+                            elements.append(try jsonValue.decode())
+                        } catch let error as JSON.DecodingError {
+                            if let recoveredValue = try recoverer(jsonValue, error) {
                                 elements.append(recoveredValue)
                             }
                         }
-                    } else if let recoveredValue = try recoverer(nil, .ContansNilElement) {
+                    } else if let recoveredValue = try recoverer(nil, .contansNilElement) {
                         elements.append(recoveredValue)
                     }
                     return elements
                 }
             } else {
                 return try arrayValue.map {
-                    guard let JSONValue = $0 else {
-                        throw JSON.Error.ContansNilElement
+                    guard let jsonValue = $0 else {
+                        throw JSON.DecodingError.contansNilElement
                     }
-                    return try JSONValue.decode()
+                    return try jsonValue.decode()
                 }
             }
-        } catch let error as JSON.Error {
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.Error) throws -> T?)? = nil) throws -> [String: T?] {
-        let JSONValue: JSON = try decode()
-        guard case let .DictionaryValue(dictionaryValue) = JSONValue else {
-            throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [String: T?].self, from: JSONValue))
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.DecodingError) throws -> T?)? = nil) throws -> [String: T?] {
+        let jsonValue: JSON = try decode()
+        guard case let .dictionaryValue(dictionaryValue) = jsonValue else {
+            throw wrapError(JSON.DecodingError.typeMismatch(whileDecoding: [String: T?].self, from: jsonValue))
         }
         do {
             if let recoverer = recoverer {
                 return Dictionary(elements: try dictionaryValue.map { ($0, try $1.flatMap {
                     do {
                         return try $0.decode()
-                    } catch let error as JSON.Error {
+                    } catch let error as JSON.DecodingError {
                         return try recoverer($0, error)
                     }
                 }) })
             } else {
                 return Dictionary(elements: try dictionaryValue.map { ($0, try $1.map { try $0.decode() }) })
             }
-        } catch let error as JSON.Error {
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.Error) throws -> T?)? = nil) throws -> [String: T] {
-        let JSONValue: JSON = try decode()
-        guard case let .DictionaryValue(dictionaryValue) = JSONValue else {
-            throw wrapError(JSON.Error.TypeMismatch(whileDecoding: [String: T].self, from: JSONValue))
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.DecodingError) throws -> T?)? = nil) throws -> [String: T] {
+        let jsonValue: JSON = try decode()
+        guard case let .dictionaryValue(dictionaryValue) = jsonValue else {
+            throw wrapError(JSON.DecodingError.typeMismatch(whileDecoding: [String: T].self, from: jsonValue))
         }
         do {
             if let recoverer = recoverer {
-                return Dictionary(elements: try dictionaryValue.reduce([]) { (var elements, pair) in
-                    let (key, JSONValue) = pair
-                    if let JSONValue = JSONValue{
+                return Dictionary(elements: try dictionaryValue.reduce([]) { (elements, pair) in
+                    var elements = elements
+                    let (key, jsonValue) = pair
+                    if let jsonValue = jsonValue{
                         do {
-                            elements.append((key, try JSONValue.decode()))
-                        } catch let error as JSON.Error {
-                            if let recoveredValue = try recoverer(JSONValue, error) {
+                            elements.append((key, try jsonValue.decode()))
+                        } catch let error as JSON.DecodingError {
+                            if let recoveredValue = try recoverer(jsonValue, error) {
                                 elements.append((key, recoveredValue))
                             }
                         }
-                    } else if let recoveredValue = try recoverer(nil, .ContansNilElement) {
+                    } else if let recoveredValue = try recoverer(nil, .contansNilElement) {
                         elements.append((key, recoveredValue))
                     }
                     return elements
                 })
             } else {
-                return Dictionary(elements: try dictionaryValue.map { key, JSONValue in
-                    guard let JSONValue = JSONValue else {
-                        throw JSON.Error.ContansNilElement
+                return Dictionary(elements: try dictionaryValue.map { key, jsonValue in
+                    guard let jsonValue = jsonValue else {
+                        throw JSON.DecodingError.contansNilElement
                     }
-                    return (key, try JSONValue.decode())
+                    return (key, try jsonValue.decode())
                 })
             }
-        } catch let error as JSON.Error {
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
@@ -333,46 +356,46 @@ extension JSONDecoder {
     // MARK: Decoding Optionals
     
     public func decode<T: JSONDecodable>() throws -> T? {
-        let JSONValue: JSON? = try decode()
+        let jsonValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode() }
-        } catch let error as JSON.Error {
+            return try jsonValue.map { try $0.decode() }
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.Error) throws -> T?)? = nil) throws -> [T?]? {
-        let JSONValue: JSON? = try decode()
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.DecodingError) throws -> T?)? = nil) throws -> [T?]? {
+        let jsonValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
-        } catch let error as JSON.Error {
+            return try jsonValue.map { try $0.decode(elementRecoverer: recoverer) }
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.Error) throws -> T?)? = nil) throws -> [T]? {
-        let JSONValue: JSON? = try decode()
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.DecodingError) throws -> T?)? = nil) throws -> [T]? {
+        let jsonValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
-        } catch let error as JSON.Error {
+            return try jsonValue.map { try $0.decode(elementRecoverer: recoverer) }
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.Error) throws -> T?)? = nil) throws -> [String: T?]? {
-        let JSONValue: JSON? = try decode()
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON, JSON.DecodingError) throws -> T?)? = nil) throws -> [String: T?]? {
+        let jsonValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
-        } catch let error as JSON.Error {
+            return try jsonValue.map { try $0.decode(elementRecoverer: recoverer) }
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
     
-    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.Error) throws -> T?)? = nil) throws -> [String: T]? {
-        let JSONValue: JSON? = try decode()
+    public func decode<T: JSONDecodable>(elementRecoverer recoverer: ((JSON?, JSON.DecodingError) throws -> T?)? = nil) throws -> [String: T]? {
+        let jsonValue: JSON? = try decode()
         do {
-            return try JSONValue.map { try $0.decode(elementRecoverer: recoverer) }
-        } catch let error as JSON.Error {
+            return try jsonValue.map { try $0.decode(elementRecoverer: recoverer) }
+        } catch let error as JSON.DecodingError {
             throw wrapError(error)
         }
     }
@@ -380,8 +403,8 @@ extension JSONDecoder {
 
 extension JSON {
     public struct KeyedValue {
-        private let container: JSONDecoder
-        private let key: String
+        fileprivate let container: JSONDecoder
+        fileprivate let key: String
     }
 }
 
@@ -399,7 +422,7 @@ extension JSON: JSONDecoder {
         return self
     }
     
-    public func wrapError(error: JSON.Error) -> JSON.Error {
+    public func wrapError(_ error: JSON.DecodingError) -> JSON.DecodingError {
         return error
     }
 }
@@ -409,8 +432,8 @@ extension JSON.KeyedValue: JSONDecoder {
         return try container.decode()[key] ?? nil
     }
     
-    public func wrapError(error: JSON.Error) -> JSON.Error {
-        return JSON.Error.KeyError(key, container.wrapError(error))
+    public func wrapError(_ error: JSON.DecodingError) -> JSON.DecodingError {
+        return JSON.DecodingError.keyError(key, container.wrapError(error))
     }
 }
 
@@ -418,36 +441,33 @@ extension JSON.KeyedValue: JSONDecoder {
 // MARK: - Encoding & Decoding Conformance For Basic Types
 
 extension JSON: JSONDecodable, JSONEncodable {
-    public init(JSONValue: JSON) {
-        self = JSONValue
+    public init(jsonValue: JSON) {
+        self = jsonValue
     }
     
-    public var JSONValue: JSON {
+    public var jsonValue: JSON {
         return self
     }
 }
 
 extension Bool: JSONDecodable, JSONEncodable {
-    public init(JSONValue: JSON) throws {
-        switch JSONValue {
-        case let .BoolValue(v):                 self = v
-        case let .NumberValue(.IntValue(v)):    self = Bool(v)
-        case let .NumberValue(.FloatValue(v)):  self = Bool(v)
-        case let .NumberValue(.DoubleValue(v)): self = Bool(v)
-        
-        default: throw JSON.Error.TypeMismatch(whileDecoding: Bool.self, from: JSONValue)
+    public init(jsonValue: JSON) throws {
+        if case let .boolValue(bool) = jsonValue {
+            self = bool
+        } else {
+            throw JSON.DecodingError.typeMismatch(whileDecoding: Bool.self, from: jsonValue)
         }
     }
     
-    public var JSONValue: JSON {
-        return .BoolValue(self)
+    public var jsonValue: JSON {
+        return .boolValue(self)
     }
 }
 
 private extension String {
     func toNumber() -> Int? {
         var v: Int = 0
-        if NSScanner(string: self).scanInteger(&v) {
+        if Scanner(string: self).scanInt(&v) {
             return v
         }
         return nil
@@ -455,7 +475,7 @@ private extension String {
     
     func toNumber() -> Float? {
         var v: Float = 0
-        if NSScanner(string: self).scanFloat(&v) {
+        if Scanner(string: self).scanFloat(&v) {
             return v
         }
         return nil
@@ -463,7 +483,7 @@ private extension String {
     
     func toNumber() -> Double? {
         var v: Double = 0
-        if NSScanner(string: self).scanDouble(&v) {
+        if Scanner(string: self).scanDouble(&v) {
             return v
         }
         return nil
@@ -471,89 +491,89 @@ private extension String {
 }
 
 extension Int: JSONDecodable, JSONEncodable {
-    public init(JSONValue: JSON) throws {
-        switch JSONValue {
-        case let .NumberValue(.IntValue(v)):    self = v
-        case let .NumberValue(.FloatValue(v)):  self = Int(v)
-        case let .NumberValue(.DoubleValue(v)): self = Int(v)
+    public init(jsonValue: JSON) throws {
+        switch jsonValue {
+        case let .numberValue(.intValue(v)):    self = v
+        case let .numberValue(.floatValue(v)):  self = Int(v)
+        case let .numberValue(.doubleValue(v)): self = Int(v)
         
-        case let .StringValue(v):
+        case let .stringValue(v):
             if let v: Int = v.toNumber() {
                 self = v
             } else {
-                throw JSON.Error.TypeMismatch(whileDecoding: Int.self, from: JSONValue)
+                throw JSON.DecodingError.typeMismatch(whileDecoding: Int.self, from: jsonValue)
             }
 
         default:
-            throw JSON.Error.TypeMismatch(whileDecoding: Int.self, from: JSONValue)
+            throw JSON.DecodingError.typeMismatch(whileDecoding: Int.self, from: jsonValue)
         }
     }
     
-    public var JSONValue: JSON {
-        return .NumberValue(.IntValue(self))
+    public var jsonValue: JSON {
+        return .numberValue(.intValue(self))
     }
 }
 
 extension Float: JSONDecodable, JSONEncodable {
-    public init(JSONValue: JSON) throws {
-        switch JSONValue {
-        case let .NumberValue(.IntValue(v)):    self = Float(v)
-        case let .NumberValue(.FloatValue(v)):  self = v
-        case let .NumberValue(.DoubleValue(v)): self = Float(v)
+    public init(jsonValue: JSON) throws {
+        switch jsonValue {
+        case let .numberValue(.intValue(v)):    self = Float(v)
+        case let .numberValue(.floatValue(v)):  self = v
+        case let .numberValue(.doubleValue(v)): self = Float(v)
         
-        case let .StringValue(v):
+        case let .stringValue(v):
             if let v: Float = v.toNumber() {
                 self = v
             } else {
-                throw JSON.Error.TypeMismatch(whileDecoding: Float.self, from: JSONValue)
+                throw JSON.DecodingError.typeMismatch(whileDecoding: Float.self, from: jsonValue)
             }
             
         default:
-            throw JSON.Error.TypeMismatch(whileDecoding: Float.self, from: JSONValue)
+            throw JSON.DecodingError.typeMismatch(whileDecoding: Float.self, from: jsonValue)
         }
     }
     
-    public var JSONValue: JSON {
-        return .NumberValue(.FloatValue(self))
+    public var jsonValue: JSON {
+        return .numberValue(.floatValue(self))
     }
 }
 
 extension Double: JSONDecodable, JSONEncodable {
-    public init(JSONValue: JSON) throws {
-        switch JSONValue {
-        case let .NumberValue(.IntValue(v)):    self = Double(v)
-        case let .NumberValue(.FloatValue(v)):  self = Double(v)
-        case let .NumberValue(.DoubleValue(v)): self = v
+    public init(jsonValue: JSON) throws {
+        switch jsonValue {
+        case let .numberValue(.intValue(v)):    self = Double(v)
+        case let .numberValue(.floatValue(v)):  self = Double(v)
+        case let .numberValue(.doubleValue(v)): self = v
         
-        case let .StringValue(v):
+        case let .stringValue(v):
             if let v: Double = v.toNumber() {
                 self = v
             } else {
-                throw JSON.Error.TypeMismatch(whileDecoding: Double.self, from: JSONValue)
+                throw JSON.DecodingError.typeMismatch(whileDecoding: Double.self, from: jsonValue)
             }
         
         default:
-            throw JSON.Error.TypeMismatch(whileDecoding: Double.self, from: JSONValue)
+            throw JSON.DecodingError.typeMismatch(whileDecoding: Double.self, from: jsonValue)
         }
     }
     
-    public var JSONValue: JSON {
-        return .NumberValue(.DoubleValue(self))
+    public var jsonValue: JSON {
+        return .numberValue(.doubleValue(self))
     }
 }
 
 extension String: JSONDecodable, JSONEncodable {
-    public init(JSONValue: JSON) throws {
-        switch JSONValue {
-        case let .StringValue(v):
+    public init(jsonValue: JSON) throws {
+        switch jsonValue {
+        case let .stringValue(v):
             self = v
         default:
-            throw JSON.Error.TypeMismatch(whileDecoding: String.self, from: JSONValue)
+            throw JSON.DecodingError.typeMismatch(whileDecoding: String.self, from: jsonValue)
         }
     }
     
-    public var JSONValue: JSON {
-        return .StringValue(self)
+    public var jsonValue: JSON {
+        return .stringValue(self)
     }
 }
 
@@ -563,9 +583,9 @@ extension String: JSONDecodable, JSONEncodable {
 extension JSON.Number: CustomStringConvertible {
     public var description: String {
         switch self {
-        case let .IntValue(v): return v.description
-        case let .FloatValue(v): return v.description
-        case let .DoubleValue(v): return v.description
+        case let .intValue(v): return v.description
+        case let .floatValue(v): return v.description
+        case let .doubleValue(v): return v.description
         }
     }
 }
@@ -573,21 +593,21 @@ extension JSON.Number: CustomStringConvertible {
 extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         switch self {
-        case let .BoolValue(v): return v.description
-        case let .NumberValue(v): return v.description
-        case let .StringValue(v): return v
-        case let .ArrayValue(v): return "[" + v.map{$0?.description ?? "nil"}.joinWithSeparator(", ") + "]"
-        case let .DictionaryValue(v): return "[" + v.map{"\($0.0): " + ($0.1?.description ?? "nil")}.joinWithSeparator(", ") + "]"
+        case let .boolValue(v): return v.description
+        case let .numberValue(v): return v.description
+        case let .stringValue(v): return v
+        case let .arrayValue(v): return "[" + v.map{$0?.description ?? "nil"}.joined(separator: ", ") + "]"
+        case let .dictionaryValue(v): return "[" + v.map{"\($0.0): " + ($0.1?.description ?? "nil")}.joined(separator: ", ") + "]"
         }
     }
     
     public var debugDescription: String {
         switch self {
-        case let .BoolValue(v): return v.description
-        case let .NumberValue(v): return v.description
-        case let .StringValue(v): return v.debugDescription
-        case let .ArrayValue(v): return "[" + v.map{$0.debugDescription}.joinWithSeparator(", ") + "]"
-        case let .DictionaryValue(v): return "[" + v.map{"\($0.0.debugDescription): \($0.1.debugDescription)"}.joinWithSeparator(", ") + "]"
+        case let .boolValue(v): return v.description
+        case let .numberValue(v): return v.description
+        case let .stringValue(v): return v.debugDescription
+        case let .arrayValue(v): return "[" + v.map{$0.debugDescription}.joined(separator: ", ") + "]"
+        case let .dictionaryValue(v): return "[" + v.map{"\($0.0.debugDescription): \($0.1.debugDescription)"}.joined(separator: ", ") + "]"
         }
     }
 }
@@ -596,10 +616,12 @@ extension JSON: CustomStringConvertible, CustomDebugStringConvertible {
 // MARK: - Helpers
 
 extension Dictionary {
-    private init(elements: [Element]) {
-        self = elements.reduce([Key: Value]()) {(var dict, pair) in
-            dict[pair.0] = pair.1
-            return dict
+
+    init(elements: [Element]) {
+        var dictionary: [Key: Value] = [:]
+        for (key, value) in elements {
+            dictionary[key] = value
         }
+        self = dictionary
     }
 }
