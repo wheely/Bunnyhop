@@ -176,7 +176,7 @@ extension JSON {
     public enum DecodingError: Error {
         case typeMismatch(whileDecoding: Any.Type, from: JSON) // Expecting different type of JSON value
         case missingValue            // Trying to decode Optional<JSON>.None to some non-optional JSONDecodable type
-        case contansNilElement       // Trying to decode [JSON?] or [String: JSON?] which contains nil into [JSONDecodable] or [String: JSONDecodable]
+        case containsNilElement       // Trying to decode [JSON?] or [String: JSON?] which contains nil into [JSONDecodable] or [String: JSONDecodable]
         indirect case keyError(String, DecodingError) // Error when decoding value for specific key in .DictionaryValue
     }
 }
@@ -188,7 +188,7 @@ extension JSON.DecodingError: CustomStringConvertible, CustomDebugStringConverti
             return "Can't initialize \(type) with \(jsonValue.debugDescription)"
         case .missingValue:
             return "Missing value"
-        case .contansNilElement:
+        case .containsNilElement:
             return "Contains nil element"
         case var .keyError(key, error):
             while true {
@@ -207,7 +207,7 @@ extension JSON.DecodingError: CustomStringConvertible, CustomDebugStringConverti
         switch self {
             case .typeMismatch: return "{TypeMismatch}"
             case .missingValue: return "{MissingValue}"
-            case .contansNilElement: return "{ContansNilElement}"
+            case .containsNilElement: return "{ContainsNilElement}"
             case let .keyError(key, error): return "{KeyError(key: \"\(key)\", error: \(error.debugDescription))}"
         }
     }
@@ -276,7 +276,7 @@ extension JSONDecoder {
                                 elements.append(recoveredValue)
                             }
                         }
-                    } else if let recoveredValue = try recoverer(nil, .contansNilElement) {
+                    } else if let recoveredValue = try recoverer(nil, .containsNilElement) {
                         elements.append(recoveredValue)
                     }
                     return elements
@@ -284,7 +284,7 @@ extension JSONDecoder {
             } else {
                 return try arrayValue.map {
                     guard let jsonValue = $0 else {
-                        throw JSON.DecodingError.contansNilElement
+                        throw JSON.DecodingError.containsNilElement
                     }
                     return try jsonValue.decode()
                 }
@@ -334,7 +334,7 @@ extension JSONDecoder {
                                 elements.append((key, recoveredValue))
                             }
                         }
-                    } else if let recoveredValue = try recoverer(nil, .contansNilElement) {
+                    } else if let recoveredValue = try recoverer(nil, .containsNilElement) {
                         elements.append((key, recoveredValue))
                     }
                     return elements
@@ -342,7 +342,7 @@ extension JSONDecoder {
             } else {
                 return Dictionary(elements: try dictionaryValue.map { key, jsonValue in
                     guard let jsonValue = jsonValue else {
-                        throw JSON.DecodingError.contansNilElement
+                        throw JSON.DecodingError.containsNilElement
                     }
                     return (key, try jsonValue.decode())
                 })
