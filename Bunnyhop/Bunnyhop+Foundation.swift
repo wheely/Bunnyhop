@@ -6,70 +6,90 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
-import Foundation
-
-
-extension CGFloat: JSONDecodable, JSONEncodable {
-    public init(jsonValue: JSON) throws {
-        let value: Double = try jsonValue.decode()
-        self.init(value)
-    }
-    
-    public var jsonValue: JSON {
-        return .numberValue(.doubleValue(Double(self)))
-    }
-}
+/**
+ Object that's returned by JSONSerialization's jsonObject(:) method.
+ The object must have the following properties:
+ - Top level object is an NSArray or NSDictionary
+ - All objects are NSString, NSNumber, NSArray, NSDictionary, or NSNull
+ - All dictionary keys are NSStrings
+ - NSNumbers are not NaN or infinity
+ */
+public typealias JSONObject = Any
 
 public extension JSON {
-    /// Converts from NSJSONSerialization's Any
-    public static func fromAnyObject(_ jsonObject: Any) -> JSON? {
-        switch jsonObject {
 
-        case let nsNumber as NSNumber:
-            return nsNumber.json
-
-        case let string as String:
-            return .stringValue(string)
-
-        case let array as [Any]:
-            return .arrayValue(array.map { JSON.fromAnyObject($0) })
-
-        case let dictionary as [String: Any]:
-            return .dictionaryValue(Dictionary(elements: dictionary.map { ($0, JSON.fromAnyObject($1)) }))
-
-        default:
-            return nil
-        }
-    }
-    
-    public func toAnyObject() -> Any {
+    public var jsonObject: JSONObject {
         switch self {
         case let .boolValue(bool):                   return bool
         case let .numberValue(.intValue(int)):       return int
         case let .numberValue(.floatValue(float)):   return float
         case let .numberValue(.doubleValue(double)): return double
         case let .stringValue(string):               return string
-        case let .arrayValue(array):                 return array.map { $0?.toAnyObject() }
+        case let .arrayValue(array):                 return array.map { $0?.jsonObject }
 
         case let .dictionaryValue(dictionary):
-            return Dictionary(elements: dictionary.map { ($0, $1?.toAnyObject()) })
+            return Dictionary(elements: dictionary.map { ($0, $1?.jsonObject) })
         }
     }
-    
+
+    init?(jsonObject: JSONObject) {
+        switch jsonObject {
+
+        case let nsNumber as NSNumber:
+            self = nsNumber.json
+
+        case let string as String:
+            self = .stringValue(string)
+
+        case let array as [JSONObject]:
+            self = .arrayValue(array.map { JSON(jsonObject: $0) })
+
+        case let dictionary as [String: JSONObject]:
+            self = .dictionaryValue(Dictionary(elements: dictionary.map { ($0, JSON(jsonObject: $1)) }))
+            
+        default:
+            return nil
+        }
+    }
+}
+
+
+// MARK: JSON + Data
+
+extension JSON {
+
     public init?(data: Data, allowFragments: Bool = false) throws {
-        let jsonAsAny: Any =
-            try JSONSerialization.jsonObject(with: data, options: allowFragments ? .allowFragments : JSONSerialization.ReadingOptions())
-        if let jsonValue = JSON.fromAnyObject(jsonAsAny) {
+        let jsonObject: Any = try JSONSerialization.jsonObject(
+            with: data,
+            options: allowFragments ? .allowFragments : JSONSerialization.ReadingOptions()
+        )
+        if let jsonValue = JSON(jsonObject: jsonObject) {
             self = jsonValue
         } else {
             return nil
         }
     }
-    
-    public func encode(_ prettyPrinted: Bool = false) -> Data {
+
+    public func encode(prettyPrinted: Bool = false) -> Data {
         // An instance of JSON type will never throw an error
-        return try! JSONSerialization.data(withJSONObject: toAnyObject(),
-                                                           options: prettyPrinted ? .prettyPrinted : JSONSerialization.WritingOptions())
+        return try! JSONSerialization.data(
+            withJSONObject: jsonObject,
+            options: prettyPrinted ? .prettyPrinted : JSONSerialization.WritingOptions()
+        )
+    }
+}
+
+
+// MARK: - CGFloat + JSON
+
+extension CGFloat: JSONDecodable, JSONEncodable {
+    public init(jsonValue: JSON) throws {
+        let value: Double = try jsonValue.decode()
+        self.init(value)
+    }
+
+    public var jsonValue: JSON {
+        return .numberValue(.doubleValue(Double(self)))
     }
 }
 
