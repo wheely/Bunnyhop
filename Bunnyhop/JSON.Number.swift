@@ -20,7 +20,7 @@ extension JSON {
 
 extension JSON.Number: Equatable {
 
-    static func areEqualWithPrecision<T: BinaryFloatingPoint>(_ lhs: T, _ rhs: T, precision: T = 10e-6) -> Bool {
+    static func areEqualWithPrecision<T: BinaryFloatingPoint>(_ lhs: T, _ rhs: T, precision: T = 1e-6) -> Bool {
         return abs(lhs - rhs) < precision
     }
 
