@@ -12,38 +12,20 @@ import XCTest
 
 class EqualityWithPrecisionTests: XCTestCase {
 
-    func testEqualityWithinPrecision() {
+    func testEquality() {
         let precision = 1e-3
 
         let double1 = 0.123
-        let double2 = 0.123
+        let double2 = 0.1234
 
         XCTAssert(JSON.Number.areEqualWithPrecision(double1, double2, precision: precision))
     }
 
-    func testInequalityWithinPrecision() {
-        let precision = 1e-3
+    func testInequality() {
+        let precision = 1e-4
 
         let double1 = 0.123
-        let double2 = 0.124
-
-        XCTAssertFalse(JSON.Number.areEqualWithPrecision(double1, double2, precision: precision))
-    }
-
-    func testEqualityExceedingPrecision() {
-        let precision = 1e-6
-
-        let double1 = 0.123456
-        let double2 = 0.123456_7
-
-        XCTAssert(JSON.Number.areEqualWithPrecision(double1, double2, precision: precision))
-    }
-
-    func testInequalityExceedingPrecision() {
-        let precision = 1e-6
-
-        let double1 = 0.123456_78
-        let double2 = 0.123457_89
+        let double2 = 0.1234
 
         XCTAssertFalse(JSON.Number.areEqualWithPrecision(double1, double2, precision: precision))
     }
