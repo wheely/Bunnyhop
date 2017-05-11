@@ -20,16 +20,8 @@ extension JSON {
 
 extension JSON.Number: Equatable {
 
-    private static var decimalComparissonPrecision: Double {
-        return 10e-6 // 0.000_001
-    }
-
-    private static func areEqualWithPrecision(_ lhs: Double, _ rhs: Double) -> Bool {
-        return abs(lhs - rhs) < decimalComparissonPrecision
-    }
-
-    private static func areEqualWithPrecision(_ lhs: Float, _ rhs: Float) -> Bool {
-        return abs(lhs - rhs) < Float(decimalComparissonPrecision)
+    static func areEqualWithPrecision<T: BinaryFloatingPoint>(_ lhs: T, _ rhs: T, precision: T = 10e-6) -> Bool {
+        return abs(lhs - rhs) < precision
     }
 
     public static func ==(lhs: JSON.Number, rhs: JSON.Number) -> Bool {
