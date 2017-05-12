@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import Bunnyhop
+@testable import Bunnyhop
 
 
 private enum Key {
@@ -26,22 +26,6 @@ private enum Key {
 
     static let boolTrue = "bool_true"                  // true
     static let boolFalse = "bool_false"                // false
-}
-
-private var decimalComparissonPrecision: Double {
-    return 10e-6 // 0.000_001
-}
-
-private func areEqualWithPrecision(_ lhs: Double, _ rhs: Double) -> Bool {
-    return abs(lhs - rhs) < decimalComparissonPrecision
-}
-
-private func areEqualWithPrecision(_ lhs: Float, _ rhs: Float) -> Bool {
-    return abs(lhs - rhs) < Float(decimalComparissonPrecision)
-}
-
-private func areEqualWithPrecision(_ lhs: CGFloat, _ rhs: CGFloat) -> Bool {
-    return abs(lhs - rhs) < CGFloat(decimalComparissonPrecision)
 }
 
 class BunnyhopTests: XCTestCase {
@@ -164,7 +148,7 @@ class BunnyhopTests: XCTestCase {
         }
 
         if let float: Float = json[Key.stringDecimal]!.decode() {
-            XCTAssert(areEqualWithPrecision(float, 6.9))
+            XCTAssert(JSON.Number.areEqualWithPrecision(float, 6.9))
         } else {
             XCTFail("Failed to decode Float for key \(Key.stringDecimal)")
         }
@@ -176,7 +160,7 @@ class BunnyhopTests: XCTestCase {
         }
 
         if let float: Float = json[Key.decimal]!.decode() {
-            XCTAssert(areEqualWithPrecision(float, 6.9))
+            XCTAssert(JSON.Number.areEqualWithPrecision(float, 6.9))
         } else {
             XCTFail("Failed to decode Float for key \(Key.decimal)")
         }
@@ -202,7 +186,7 @@ class BunnyhopTests: XCTestCase {
         }
 
         if let double: Double = json[Key.decimal]!.decode() {
-            XCTAssert(areEqualWithPrecision(double, 6.9))
+            XCTAssert(JSON.Number.areEqualWithPrecision(double, 6.9))
         } else {
             XCTFail("Failed to decode Double for key \(Key.decimal)")
         }
@@ -214,7 +198,7 @@ class BunnyhopTests: XCTestCase {
         }
 
         if let double: Double = json[Key.decimal]!.decode() {
-            XCTAssert(areEqualWithPrecision(double, 6.9))
+            XCTAssert(JSON.Number.areEqualWithPrecision(double, 6.9))
         } else {
             XCTFail("Failed to decode Double for key \(Key.decimal)")
         }
@@ -246,7 +230,7 @@ class BunnyhopTests: XCTestCase {
         }
 
         if let cgFloat: CGFloat = json[Key.decimal]!.decode() {
-            XCTAssert(areEqualWithPrecision(cgFloat, 6.9))
+            XCTAssert(JSON.Number.areEqualWithPrecision(cgFloat, 6.9))
         } else {
             XCTFail("Failed to decode CGFloat for key \(Key.decimal)")
         }
