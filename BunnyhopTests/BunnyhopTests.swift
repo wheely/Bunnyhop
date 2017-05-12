@@ -23,12 +23,12 @@ class BunnyhopTests: XCTestCase {
             self.legCount = legCount
         }
         
-        init(JSONValue: JSON) throws {
-            self.init(name:     try JSONValue["name"].decode(),
-                      legCount: try JSONValue["leg_count"].decode())
+        init(jsonValue: JSON) throws {
+            self.init(name:     try jsonValue["name"].decode(),
+                      legCount: try jsonValue["leg_count"].decode())
         }
         
-        var JSONValue: JSON {
+        var jsonValue: JSON {
             return ["name": name, "leg_count": legCount]
         }
     }

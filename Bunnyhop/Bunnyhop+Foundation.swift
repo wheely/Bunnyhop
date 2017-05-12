@@ -6,91 +6,110 @@
 //  Copyright (c) 2015 Wheely. All rights reserved.
 //
 
-import Foundation
+/**
+ Object that's returned by JSONSerialization's jsonObject(:) method.
+ The object must have the following properties:
+ - Top level object is an NSArray or NSDictionary
+ - All objects are NSString, NSNumber, NSArray, NSDictionary, or NSNull
+ - All dictionary keys are NSStrings
+ - NSNumbers are not NaN or infinity
+ */
+public typealias JSONObject = Any
 
+public extension JSON {
 
-extension CGFloat: JSONDecodable, JSONEncodable {
-    public init(JSONValue: JSON) throws {
-        let value: Double = try JSONValue.decode()
-        self.init(value)
+    public var jsonObject: JSONObject {
+        switch self {
+        case let .boolValue(bool):                   return bool
+        case let .numberValue(.intValue(int)):       return int
+        case let .numberValue(.floatValue(float)):   return float
+        case let .numberValue(.doubleValue(double)): return double
+        case let .stringValue(string):               return string
+        case let .arrayValue(array):                 return array.map { $0?.jsonObject }
+
+        case let .dictionaryValue(dictionary):
+            return Dictionary(elements: dictionary.map { ($0, $1?.jsonObject) })
+        }
     }
-    
-    public var JSONValue: JSON {
-        return .NumberValue(.DoubleValue(Double(self)))
+
+    init?(jsonObject: JSONObject) {
+        switch jsonObject {
+
+        case let nsNumber as NSNumber:
+            self = nsNumber.json
+
+        case let string as String:
+            self = .stringValue(string)
+
+        case let array as [JSONObject]:
+            self = .arrayValue(array.map { JSON(jsonObject: $0) })
+
+        case let dictionary as [String: JSONObject]:
+            self = .dictionaryValue(Dictionary(elements: dictionary.map { ($0, JSON(jsonObject: $1)) }))
+            
+        default:
+            return nil
+        }
     }
 }
 
-public extension JSON {
-    /// Converts from NSJSONSerialization's AnyObject
-    public static func fromAnyObject(anyObject: AnyObject) -> JSON? {
-        switch anyObject {
-        
-        case _ as NSNull:
-            return nil
-        
-        case let a as NSNumber:
-            switch CFNumberGetType(a as CFNumber) {
-            case .SInt8Type, .SInt16Type, .SInt32Type, .SInt64Type,
-                 .CharType, .ShortType, .IntType, .LongType, .LongLongType,
-                 .CFIndexType, .NSIntegerType:
-                return (a as Int).JSONValue
-            case .Float32Type, .Float64Type, .FloatType, .CGFloatType:
-                return (a as Float).JSONValue
-            case .DoubleType:
-                return (a as Double).JSONValue
-            }
-        
-        case let value as String:
-            return .StringValue(value)
-        
-        case let value as [AnyObject]:
-            return .ArrayValue(value.map{JSON.fromAnyObject($0)})
-            
-        case let value as [String: AnyObject]:
-            var d: [String: JSON?] = [:]
-            for (k, v) in value {
-                d[k] = JSON.fromAnyObject(v)
-            }
-            return .DictionaryValue(d)
-            
-        default:
-            break
-        }
-        
-        return nil
-    }
-    
-    public func toAnyObject() -> AnyObject {
-        switch self {
-        case let .BoolValue(v):                 return v as NSNumber
-        case let .NumberValue(.IntValue(v)):    return v as NSNumber
-        case let .NumberValue(.FloatValue(v)):  return v as NSNumber
-        case let .NumberValue(.DoubleValue(v)): return v as NSNumber
-        case let .StringValue(v):               return v as NSString
-        case let .ArrayValue(v):                return v.map{$0.map{$0.toAnyObject()} ?? NSNull()} as NSArray
-        
-        case let .DictionaryValue(v):
-            var d: [String: AnyObject] = [:]
-            for (k, v) in v {
-                d[k] = v.map{$0.toAnyObject()} ?? NSNull()
-            }
-            return d as NSDictionary
-        }
-    }
-    
-    public init?(data: NSData, allowFragments: Bool = false) throws {
-        let JSONAsAnyObject: AnyObject =
-            try NSJSONSerialization.JSONObjectWithData(data, options: allowFragments ? .AllowFragments : NSJSONReadingOptions())
-        if let JSONValue = JSON.fromAnyObject(JSONAsAnyObject) {
-            self = JSONValue
+
+// MARK: JSON + Data
+
+extension JSON {
+
+    public init?(data: Data, allowFragments: Bool = false) throws {
+        let jsonObject: Any = try JSONSerialization.jsonObject(
+            with: data,
+            options: allowFragments ? .allowFragments : JSONSerialization.ReadingOptions()
+        )
+        if let jsonValue = JSON(jsonObject: jsonObject) {
+            self = jsonValue
         } else {
             return nil
         }
     }
-    
-    public func encode(prettyPrinted: Bool = false) -> NSData {
+
+    public func encode(prettyPrinted: Bool = false) -> Data {
         // An instance of JSON type will never throw an error
-        return try! NSJSONSerialization.dataWithJSONObject(toAnyObject(),
-                                                           options: prettyPrinted ? .PrettyPrinted : NSJSONWritingOptions())
+        return try! JSONSerialization.data(
+            withJSONObject: jsonObject,
+            options: prettyPrinted ? .prettyPrinted : JSONSerialization.WritingOptions()
+        )
+    }
+}
+
+
+// MARK: - CGFloat + JSON
+
+extension CGFloat: JSONDecodable, JSONEncodable {
+    public init(jsonValue: JSON) throws {
+        let value: Double = try jsonValue.decode()
+        self.init(value)
+    }
+
+    public var jsonValue: JSON {
+        return .numberValue(.doubleValue(Double(self)))
+    }
+}
+
+
+// MARK: - Helpers
+
+private extension NSNumber {
+
+    var json: JSON {
+        switch CFNumberGetType(self as CFNumber) {
+        case .charType:
+            return boolValue.jsonValue
+        case .sInt8Type, .sInt16Type, .sInt32Type, .sInt64Type,
+             .shortType, .intType, .longType, .longLongType,
+             .cfIndexType, .nsIntegerType:
+            return intValue.jsonValue
+        case .float32Type, .float64Type, .floatType, .cgFloatType:
+            return floatValue.jsonValue
+        case .doubleType:
+            return doubleValue.jsonValue
+        }
     }
 }
