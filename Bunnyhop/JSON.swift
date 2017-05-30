@@ -1,11 +1,3 @@
-//
-//  JSON.swift
-//  Bunnyhop
-//
-//  Created by Nikita Kukushkin on 20/03/2017.
-//  Copyright © 2017 Wheely. All rights reserved.
-//
-
 public enum JSON {
     case boolValue(Bool)
     case numberValue(Number)

@@ -1,11 +1,3 @@
-//
-//  Bunnyhop+UIKit.swift
-//  Bunnyhop
-//
-//  Created by Nikita Kukushkin on 19/02/2017.
-//  Copyright © 2017 Wheely. All rights reserved.
-//
-
 import UIKit
 
 

@@ -1,11 +1,3 @@
-//
-//  EqualityWithPrecisionTests.swift
-//  Bunnyhop
-//
-//  Created by Nikita Kukushkin on 11/05/2017.
-//  Copyright © 2017 Wheely. All rights reserved.
-//
-
 import XCTest
 @testable import Bunnyhop
 
