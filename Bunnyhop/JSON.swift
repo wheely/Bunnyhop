@@ -115,18 +115,10 @@ extension JSON: CustomStringConvertible {
             return string
 
         case let .arrayValue(array):
-            return "["
-                + array
-                    .map { $0?.description ?? "nil" }
-                    .joined(separator: ", ")
-                + "]"
+            return "[\(array.map { $0?.description ?? "nil" }.joined(separator: ", "))]"
 
         case let .dictionaryValue(dictionary):
-            return "["
-                + dictionary
-                    .map { "\($0): " + ($1?.description ?? "nil") }
-                    .joined(separator: ", ")
-                + "]"
+            return "[\(dictionary.map { "\($0): " + ($1?.description ?? "nil") }.joined(separator: ", "))]"
         }
     }
 }
