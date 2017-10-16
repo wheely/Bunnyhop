@@ -25,6 +25,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8CFDF1311F94E15000F63190 /* Bunnyhop.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = Bunnyhop.podspec; sourceTree = SOURCE_ROOT; };
 		E93AD5371B8221DC008BB49B /* Bunnyhop.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Bunnyhop.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E93AD53B1B8221DC008BB49B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E93AD53C1B8221DC008BB49B /* Bunnyhop.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Bunnyhop.h; sourceTree = "<group>"; };
@@ -86,6 +87,7 @@
 		E93AD53A1B8221DC008BB49B /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8CFDF1311F94E15000F63190 /* Bunnyhop.podspec */,
 				E93AD53B1B8221DC008BB49B /* Info.plist */,
 			);
 			name = "Supporting Files";
