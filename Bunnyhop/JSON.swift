@@ -54,8 +54,18 @@ extension JSON: Equatable {
         case let (.arrayValue(l), .arrayValue(r)):
             return l.elementsEqual(r, by: ==)
         case let (.dictionaryValue(l), .dictionaryValue(r)):
-            return l.elementsEqual(r) { $0.key == $1.key && $0.value == $1.value }
-            
+            if Set(l.keys) != Set(r.keys) {
+                return false
+            }
+
+            for key in l.keys {
+                if l[key]! != r[key]! {
+                    return false
+                }
+            }
+
+            return true
+
         default: return false
         }
     }
@@ -124,7 +134,7 @@ extension JSON: CustomStringConvertible {
 }
 
 extension JSON: CustomDebugStringConvertible {
-    
+
     public var debugDescription: String {
         switch self {
         case let .boolValue(bool):
